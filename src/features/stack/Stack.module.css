@@ -1,0 +1,42 @@
+.electrodeSection{
+  background-color: rgba(189, 54, 54, 0.1);
+  border-radius: 5px;
+}
+
+.cathode{
+  background-color: rgba(189, 54, 54, 0.1);
+  border-radius: 5px;
+}
+
+.anode{
+  background-color: rgba(65, 189, 54, 0.1);
+  border-radius: 5px;
+}
+
+.title{
+  font-size: 18px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.button {
+  appearance: none;
+  background: none;
+  font-size: 22px;
+  outline: none;
+  border: 2px solid transparent;
+  color: rgb(0, 0, 0);
+  padding-bottom: 4px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  transition: all 0.15s;
+}
+.button:hover,
+.button:focus {
+  border: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+.button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
