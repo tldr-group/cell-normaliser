@@ -92,10 +92,10 @@ export function Cell() {
                 <div className='box-row'>
                     <div className='box-12'>
                         <div className={styles.resultTitle}>
-                            Energy density: 
+                            Specific energy / Wh kg-1
                             </div>
                             <div className={styles.result}>
-                            {parseFloat(energyDensity()).toFixed(2)} Wh kg-1
+                            {parseFloat(energyDensity()).toFixed(2)}
                         </div>
                     </div>
                 </div>

@@ -12,7 +12,7 @@ function App() {
         <div className='box-row'>
         <div className='box-12'>
           <p className='title'>
-            Cell Normaliser
+          🔋 Cell Normaliser 🔋
           </p>
         </div>
         </div>
