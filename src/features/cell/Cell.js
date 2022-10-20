@@ -24,21 +24,21 @@ import styles from './Cell.module.css';
 import './../../App.css'
 
 export function Cell() {
-  const CWetMass = useSelector(selectCWetMass);
-  const CThickness = useSelector(selectCThickness);
-  const AWetMass = useSelector(selectAWetMass);
-  const AThickness = useSelector(selectAThickness);
-  const CDiameter = useSelector(selectCDiameter);
-  const ADiameter = useSelector(selectADiameter);
-  const ACCMassLoading = useSelector(selectACCMassLoading);
-  const ACCThickness = useSelector(selectACCThickness);
-  const CCCMassLoading = useSelector(selectCCCMassLoading);
-  const CCCThickness = useSelector(selectCCCThickness);
-  const SMassLoading = useSelector(selectSMassLoading);
-  const SThickness = useSelector(selectSThickness);
-  const CaseInternalVolume = useSelector(selectCaseInternalVolume);
-  const CaseMass = useSelector(selectCaseMass);
-  const ArealEnergyDensity = useSelector(selectArealEnergyDensity);
+  const CWetMass = Number(useSelector(selectCWetMass));
+  const CThickness = Number(useSelector(selectCThickness));
+  const AWetMass = Number(useSelector(selectAWetMass));
+  const AThickness = Number(useSelector(selectAThickness));
+  const CDiameter = Number(useSelector(selectCDiameter));
+  const ADiameter = Number(useSelector(selectADiameter));
+  const ACCMassLoading = Number(useSelector(selectACCMassLoading));
+  const ACCThickness = Number(useSelector(selectACCThickness));
+  const CCCMassLoading = Number(useSelector(selectCCCMassLoading));
+  const CCCThickness = Number(useSelector(selectCCCThickness));
+  const SMassLoading = Number(useSelector(selectSMassLoading));
+  const SThickness = Number(useSelector(selectSThickness));
+  const CaseInternalVolume = Number(useSelector(selectCaseInternalVolume));
+  const CaseMass = Number(useSelector(selectCaseMass));
+  const ArealEnergyDensity = Number(useSelector(selectArealEnergyDensity));
   const dispatch = useDispatch();
 
 
@@ -83,6 +83,9 @@ export function Cell() {
                     <div className='box-12'>
                     <p className={styles.title}>
                         Cell
+                    </p>
+                    <p className={styles.subtitle}>
+                        (21700 format)
                     </p>
                     </div>
                 </div>
