@@ -13,12 +13,12 @@ import {
   selectCCCThickness,
   selectSMassLoading,
   selectSThickness,
-  selectArealEnergyDensity
+  selectArealEnergyDensity,
 } from '../stack/stackSlice';
 import {
     setEDensity,
     selectCaseInternalVolume,
-    selectCaseMass
+    selectCaseMass,
 } from './cellSlice'
 import styles from './Cell.module.css';
 import './../../App.css'
@@ -43,11 +43,11 @@ export function Cell() {
 
 
   function massToMassLoading(mass, diameter){
-    return mass / ( 0.25 * Math.PI * diameter**2)
+    return mass / ( 0.25 * Math.PI * (diameter*1e-3)**2)
   }
 
   function stackThickness(anodeThickness, cathodeThickness, separatorThickness, ACCThickness, CCCThickness){
-    return 2 * ( anodeThickness + cathodeThickness + separatorThickness ) - ( ACCThickness + CCCThickness )
+    return 2e-6 * ( anodeThickness + cathodeThickness + separatorThickness ) - 1e-6 * ( ACCThickness + CCCThickness )
   }
 
   function massLoading(anodeMassLoading, cathodeMassLoading, separatorMassLoading, ACCMassLoading, CCCMassLoading){
@@ -67,6 +67,7 @@ export function Cell() {
     var StackArea = stackArea(CaseInternalVolume, StackThickness)
 
     var energyD = 2 * StackArea * ArealEnergyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading )
+
     dispatch(setEDensity(energyD))
     
     return energyD

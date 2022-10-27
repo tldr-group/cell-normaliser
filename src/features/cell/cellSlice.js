@@ -18,7 +18,7 @@ export const cellSlice = createSlice({
     },
     setMass: (state, action) => {
           state.mass = action.payload;
-      },
+    },
 }
 })
 
