@@ -26,7 +26,11 @@ import {
   setTotalCathodeThickness,
   selectTotalCathodeThickness,
   selectAvgVoltage,
-  setAvgVoltage
+  setAvgVoltage,
+  selectLowRateCapacity,
+  setLowRateCapacity,
+  selectMeasuredCapacity,
+  setMeasuredCapacity
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -46,6 +50,8 @@ export function Electrode() {
   const TotalCathodeMass = useSelector(selectTotalCathodeMass)
   const TotalCathodeThickness = useSelector(selectTotalCathodeThickness)
   const AverageVoltage = useSelector(selectAvgVoltage)
+  const LowRateCapacity = useSelector(selectLowRateCapacity)
+  const MeasuredCapacity = useSelector(selectMeasuredCapacity)
   const dispatch = useDispatch();
 
   function valueReturn (value) {
@@ -54,6 +60,21 @@ export function Electrode() {
     }
     else{
       return ''
+    }
+  }
+
+  function validate(e){
+    // Total thickness > ccc thickness
+    console.log(e.target)
+    e.target.classList.toggle("invalid");
+    if( TotalCathodeThickness-CCCThickness<0){
+        e.target.classList.add("invalid");
+    }
+    else if( TotalCathodeMass-CCCMass<0){
+        e.target.classList.add("invalid");
+    }
+    else{
+        e.target.classList.remove("invalid");
     }
   }
 
@@ -81,6 +102,7 @@ export function Electrode() {
                 aria-label="Set cathode current collector mass"
                 value={String(valueReturn(CCCMass))}
                 onChange={(e) => dispatch(setCCCMass(e.target.value))}
+                onBlur={(e) => validate(e)}
                 >
                 </input>
                 </div>
@@ -95,6 +117,7 @@ export function Electrode() {
                 aria-label="Set cathode wet mass"
                 value={String(valueReturn(TotalCathodeMass))}
                 onChange={(e) => dispatch(setTotalCathodeMass(e.target.value))}
+                onBlur={(e) => validate(e)}
                 >
                 </input>
                 </div>
@@ -110,6 +133,7 @@ export function Electrode() {
                 aria-label="Set cathode current collector thickness"
                 onChange={(e) => dispatch(setCCCThickness((e.target.value)))}
                 value={String(valueReturn(CCCThickness))}
+                onBlur={(e) => validate(e)}
                 >
                 </input>
             </div>
@@ -123,6 +147,7 @@ export function Electrode() {
                 aria-label="Set cathode thickness"
                 onChange={(e) => dispatch(setTotalCathodeThickness(e.target.value))}
                 value={(valueReturn(TotalCathodeThickness))}
+                onBlur={(e) => validate(e)}
                 >
                 </input>
             </div>
@@ -150,6 +175,32 @@ export function Electrode() {
             aria-label="Set avg voltage"
             onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
             value={String(valueReturn(AverageVoltage))}
+            >
+            </input>
+            </div>
+        
+            <div className="box-6-offset-3">
+        <p className={styles.title}>
+            Low Rate Capacity / C
+            </p>
+            <input
+            className={styles.button}
+            aria-label="Set low rate capacity"
+            onChange={(e) => dispatch(setLowRateCapacity(e.target.value))}
+            value={String(valueReturn(LowRateCapacity))}
+            >
+            </input>
+            </div>
+
+            <div className="box-6-offset-3">
+        <p className={styles.title}>
+            Measured Capacity / C
+            </p>
+            <input
+            className={styles.button}
+            aria-label="Set measured capacity"
+            onChange={(e) => dispatch(setMeasuredCapacity(e.target.value))}
+            value={String(valueReturn(MeasuredCapacity))}
             >
             </input>
             </div>

@@ -58,6 +58,10 @@
 
 }
 
+.invalid{
+  color: red;
+}
+
 [class^="box-row"]{
   grid-column: span 12;
   grid-row: span 1;
