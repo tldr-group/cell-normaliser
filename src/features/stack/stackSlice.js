@@ -74,8 +74,8 @@ const initialState = {
   },
   diameter: 10,
   averageVoltage: 3,
-  lowRateCapacity: 300, // mAh
-  measuredCapacity: 240, //mAh
+  lowRateCapacity: 15, // mAh
+  measuredCapacity: 12, //mAh
   arealEnergyDensity: 200,
   totalCathodeMass: Number((27 * (0.25 * 100e-6 * Math.PI)).toPrecision(2)) + 30e-3,
   totalCathodeThickness: 10 + 100,
@@ -117,6 +117,13 @@ export const stackSlice = createSlice({
       state.cathodeCC.mass = action.payload;
       state.cathodeCC.massLoading = action.payload / (0.25 * (state.cathode.diameter*1e-3)**2  * Math.PI);
     },
+    setACCThickness: (state, action) => {
+      state.anodeCC.thickness = action.payload;
+    },
+    setACCMass: (state, action) => {
+      state.anodeCC.mass = action.payload;
+      state.anodeCC.massLoading = action.payload / (0.25 * (state.anode.diameter*1e-3)**2  * Math.PI);
+    },
     setTotalCathodeMass: (state, action) => {
       state.totalCathodeMass = action.payload;
       state.cathode.wetMass = action.payload - state.cathodeCC.mass
@@ -124,6 +131,14 @@ export const stackSlice = createSlice({
     setTotalCathodeThickness: (state, action) => {
       state.totalCathodeThickness = action.payload;
       state.cathode.thickness = action.payload - state.cathodeCC.thickness
+    },
+    setTotalAnodeMass: (state, action) => {
+      state.totalAnodeMass = action.payload;
+      state.anode.wetMass = action.payload - state.anodeCC.mass
+    },
+    setTotalAnodeThickness: (state, action) => {
+      state.totalAnodeThickness = action.payload;
+      state.anode.thickness = action.payload - state.anodeCC.thickness
     },
     setAvgVoltage: (state, action) => {
       state.averageVoltage = action.payload;
@@ -140,7 +155,8 @@ export const stackSlice = createSlice({
 export const { setCWetMass, setAWetMass, setCThickness, setAThickness,
                 setDiameter, setArealEnergyDensity, setActiveElectrode,
                 setCCCThickness, setCCCMass, setTotalCathodeMass, setTotalCathodeThickness,
-                setAvgVoltage, setLowRateCapacity, setMeasuredCapacity } = stackSlice.actions;
+                setAvgVoltage, setLowRateCapacity, setMeasuredCapacity, setACCMass,
+                setACCThickness, setTotalAnodeMass, setTotalAnodeThickness } = stackSlice.actions;
 
 
 export const selectCWetMass = (state) => state.stack.cathode.wetMass;
@@ -159,6 +175,8 @@ export const selectCCCThickness = (state) => state.stack.cathodeCC.thickness;
 export const selectACCThickness = (state) => state.stack.anodeCC.thickness;
 export const selectTotalCathodeMass = (state) => state.stack.totalCathodeMass;
 export const selectTotalCathodeThickness = (state) => state.stack.totalCathodeThickness;
+export const selectTotalAnodeMass = (state) => state.stack.totalAnodeMass;
+export const selectTotalAnodeThickness = (state) => state.stack.totalAnodeThickness;
 export const selectAvgVoltage = (state) => state.stack.averageVoltage;
 export const selectLowRateCapacity = (state) => state.stack.lowRateCapacity;
 export const selectMeasuredCapacity = (state) => state.stack.measuredCapacity;

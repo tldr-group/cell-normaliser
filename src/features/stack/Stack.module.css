@@ -15,6 +15,10 @@
 .anode{
   background-color: rgba(61, 54, 189, 0.1);
   border-radius: 5px;
+  grid-column: 12;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
 }
 
 .title{

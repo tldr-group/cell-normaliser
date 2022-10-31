@@ -19,10 +19,16 @@ import {
   selectCCCThickness,
   selectCCCMass,
   setCCCMass,
+  selectACCMass,
+  setACCMass,
   setTotalCathodeMass,
   selectTotalCathodeMass,
   setTotalCathodeThickness,
   selectTotalCathodeThickness,
+  setTotalAnodeMass,
+  selectTotalAnodeMass,
+  setTotalAnodeThickness,
+  selectTotalAnodeThickness,
   selectAvgVoltage,
   setAvgVoltage,
   selectLowRateCapacity,
@@ -30,7 +36,9 @@ import {
   selectMeasuredCapacity,
   setMeasuredCapacity,
   selectStack,
-  setAnodeAMTheoreticSpecificCapacity
+  setAnodeAMTheoreticSpecificCapacity,
+  selectACCThickness,
+  setACCThickness
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -46,8 +54,12 @@ export function Electrode() {
   const ActiveElectrode = useSelector(selectActiveElectrode);
   const CCCThickness = useSelector(selectCCCThickness);
   const CCCMass = useSelector(selectCCCMass);
+  const ACCMass = useSelector(selectACCMass);
+  const ACCThickness = useSelector(selectACCThickness);
   const TotalCathodeMass = useSelector(selectTotalCathodeMass)
   const TotalCathodeThickness = useSelector(selectTotalCathodeThickness)
+  const TotalAnodeMass = useSelector(selectTotalAnodeMass)
+  const TotalAnodeThickness = useSelector(selectTotalAnodeThickness)
   const AverageVoltage = useSelector(selectAvgVoltage)
   const LowRateCapacity = useSelector(selectLowRateCapacity)
   const MeasuredCapacity = useSelector(selectMeasuredCapacity)
@@ -92,14 +104,18 @@ export function Electrode() {
         var anodeThickness = (anodeAMThickness + anodeBThickness + anodeCAThickness) / (1 - Stack.anode.porosity)
         var anodeEThickness = Stack.anode.porosity * anodeThickness
         var anodeEMass = anodeEThickness*1e-6 * Stack.anode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
-
-        dispatch(setAThickness(anodeAMThickness+anodeBThickness+anodeCAThickness+anodeEThickness))
-        dispatch(setAWetMass(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass))
+        var anodeMass = Number(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass).toPrecision(1)
+        var anodeThickness = Number(anodeAMThickness+anodeBThickness+anodeCAThickness+anodeEThickness).toPrecision(1)
+        dispatch(setAThickness(anodeThickness))
+        dispatch(setAWetMass(anodeMass))
+        dispatch(setTotalAnodeMass(anodeMass+ACCMass))
+        dispatch(setTotalAnodeThickness(anodeThickness+ACCThickness))
     }
   }
 
   function electrodeRender () {
     if (ActiveElectrode === 'cathode'){
+        syncElectrode()
         return(
             <div>
             <div className={styles.cathode}>
@@ -237,69 +253,136 @@ export function Electrode() {
         )
 
     }
+    // ANODE
     else if(ActiveElectrode === 'anode'){
         return(
             <div>
             <div className={styles.anode}>
 
-            
-            <div className="box-12">
+            <div className="box-6-offset-3">
             <p className={styles.title}>
                 <button className={styles.button} onClick={() => dispatch(setActiveElectrode('cathode'))}>
                     Anode
                 </button>
             </p>
+                </div>
+                <div className='box-3'>
+                <p className={styles.title}>
+                <button className={styles.syncButton} onClick={() => (syncElectrode())}>
+                    Sync cathode
+                </button>
+            </p>
+                </div>
+                
+                <div className="box-12-row-4">
+                <p className={styles.title}>
+                Current collector mass / g
+                </p>
+                <input
+                className={styles.button}
+                type='text'
+                aria-label="Set anode current collector mass"
+                value={String(valueReturn(ACCMass))}
+                onChange={(e) => dispatch(setACCMass(e.target.value))}
+                onBlur={(e) => validate(e)}
+                >
+                </input>
+                </div>
+
+                <div className="box-12-row-4">
+                <p className={styles.title}>
+                Wet anode + current collector mass / g
+                </p>
+                <input
+                className={styles.button}
+                type='text'
+                aria-label="Set anode wet mass"
+                value={String(valueReturn(TotalAnodeMass))}
+                onChange={(e) => dispatch(setTotalAnodeMass(e.target.value))}
+                onBlur={(e) => validate(e)}
+                >
+                </input>
+                </div>
+
+                
+
+            <div className="box-12-row-4">
+            <p className={styles.title}>
+                Current collector thickness / µm
+                </p>
+                <input
+                className={styles.button}
+                aria-label="Set anode current collector thickness"
+                onChange={(e) => dispatch(setACCThickness((e.target.value)))}
+                value={String(valueReturn(ACCThickness))}
+                onBlur={(e) => validate(e)}
+                >
+                </input>
             </div>
 
             <div className="box-12-row-4">
-        <p className={styles.title}>
-            Wet mass / g
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set anode wet mass"
-            onChange={(e) => dispatch(setAWetMass(e.target.value))}
-            value={valueReturn(AWetMass)}
-            >
-            </input>
-        </div>
+            <p className={styles.title}>
+                Anode + current collector thickness / µm
+                </p>
+                <input
+                className={styles.button}
+                aria-label="Set anode thickness"
+                onChange={(e) => dispatch(setTotalAnodeThickness(e.target.value))}
+                value={(valueReturn(TotalAnodeThickness))}
+                onBlur={(e) => validate(e)}
+                >
+                </input>
+            </div>
 
             <div className="box-12-row-4">
-        <p className={styles.title}>
-            Thickness / µm
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set anode thickness"
-            onChange={(e) => dispatch(setAThickness(e.target.value/1e6))}
-            value={valueReturn(AThickness)*1e6}
-            >
-            </input>
-        </div>
-
-        <div className="box-12-row-4">
-        <p className={styles.title}>
-            Diameter / mm
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set anode diameter"
-            onChange={(e) => dispatch(setDiameter(e.target.value))}
-            value={valueReturn(Diameter)}
-            >
-            </input>
-        </div>
+            <p className={styles.title}>
+                Diameter / mm
+                </p>
+                <input
+                className={styles.button}
+                aria-label="Set anode diameter"
+                onChange={(e) => dispatch(setDiameter(e.target.value))}
+                value={String(valueReturn(Diameter))}
+                >
+                </input>
+            </div>
         </div>
 
         <div className="box-6-offset-3">
         <p className={styles.title}>
-            Areal energy density / Wh m-2
+            Average Voltage / V
             </p>
             <input
             className={styles.button}
-            aria-label="Set areal energy density"
-            onChange={(e) => dispatch(setArealEnergyDensity(e.target.value))}
-            value={valueReturn(ArealEnergyDensity)}
+            aria-label="Set avg voltage"
+            onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
+            value={String(valueReturn(AverageVoltage))}
+            >
+            </input>
+            </div>
+        
+            <div className="box-6-offset-3">
+        <p className={styles.title}>
+            Low Rate Capacity / mAh
+            </p>
+            <input
+            className={styles.button}
+            aria-label="Set low rate capacity"
+            onChange={(e) => dispatch(setLowRateCapacity(e.target.value))}
+            value={String(valueReturn(LowRateCapacity))}
+            >
+            </input>
+            </div>
+
+            <div className="box-6-offset-3">
+        <p className={styles.title}>
+            Measured Capacity / mAh
+            </p>
+            <input
+            className={styles.button}
+            aria-label="Set measured capacity"
+            onChange={(e) => dispatch(setMeasuredCapacity(e.target.value))}
+            value={String(valueReturn(MeasuredCapacity))}
             >
             </input>
             </div>
