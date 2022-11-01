@@ -4,13 +4,21 @@
 }
 
 .cathode{
-  background-color: rgba(189, 54, 54, 0.1);
+  background-color: rgba(54, 189, 81, 0.1);
   border-radius: 5px;
+  grid-column: 12;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
 }
 
 .anode{
-  background-color: rgba(65, 189, 54, 0.1);
+  background-color: rgba(61, 54, 189, 0.1);
   border-radius: 5px;
+  grid-column: 12;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
 }
 
 .title{
@@ -19,7 +27,7 @@
   padding-right: 16px;
 }
 
-.button {
+.button{
   appearance: none;
   background: none;
   font-size: 22px;
@@ -32,11 +40,31 @@
   border-radius: 5px;
   transition: all 0.15s;
 }
-.button:hover,
-.button:focus {
-  border: 2px solid rgba(0, 0, 0, 0.4);
+.button:hover{
+  border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .button:active {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.syncButton{
+  appearance: none;
+  background: none;
+  font-size: 14px;
+  outline: none;
+  border: 2px solid transparent;
+  color: rgb(0, 0, 0);
+  padding-bottom: 4px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  transition: all 0.15s;
+}
+.syncButton:hover{
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.syncButton:active {
+  background-color: rgba(0, 0, 0, 0.1);
 }

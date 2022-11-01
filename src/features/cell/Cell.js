@@ -1,53 +1,72 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectCWetMass,
   selectAWetMass,
   selectCThickness,
   selectAThickness,
-  selectCDiameter,
-  selectADiameter,
-  selectACCMassLoading,
+  selectDiameter,
+  selectACCMass,
   selectACCThickness,
-  selectCCCMassLoading,
+  selectCCCMass,
   selectCCCThickness,
   selectSMassLoading,
   selectSThickness,
-  selectArealEnergyDensity
+  selectAvgVoltage,
+  selectMeasuredCapacity,
+  selectActiveElectrode,
+  selectStack
 } from '../stack/stackSlice';
 import {
     setEDensity,
+    selectEDensity,
+    selectEnergy,
+    setEnergy,
+    selectSpecificEnergy,
+    setSpecificEnergy,
     selectCaseInternalVolume,
-    selectCaseMass
+    selectCaseMass,
+    setMass,
+    selectMass,
+    setEnergyEfficiency,
+    selectEnergyEfficiency,
 } from './cellSlice'
 import styles from './Cell.module.css';
 import './../../App.css'
+import { selectLowRateCapacity } from '../stack/stackSlice';
 
 export function Cell() {
   const CWetMass = Number(useSelector(selectCWetMass));
   const CThickness = Number(useSelector(selectCThickness));
   const AWetMass = Number(useSelector(selectAWetMass));
   const AThickness = Number(useSelector(selectAThickness));
-  const CDiameter = Number(useSelector(selectCDiameter));
-  const ADiameter = Number(useSelector(selectADiameter));
-  const ACCMassLoading = Number(useSelector(selectACCMassLoading));
+  const Diameter = Number(useSelector(selectDiameter));
+  const ACCMass = Number(useSelector(selectACCMass));
   const ACCThickness = Number(useSelector(selectACCThickness));
-  const CCCMassLoading = Number(useSelector(selectCCCMassLoading));
+  const CCCMass = Number(useSelector(selectCCCMass));
   const CCCThickness = Number(useSelector(selectCCCThickness));
   const SMassLoading = Number(useSelector(selectSMassLoading));
   const SThickness = Number(useSelector(selectSThickness));
   const CaseInternalVolume = Number(useSelector(selectCaseInternalVolume));
   const CaseMass = Number(useSelector(selectCaseMass));
-  const ArealEnergyDensity = Number(useSelector(selectArealEnergyDensity));
+  const AvgVoltage = Number(useSelector(selectAvgVoltage));
+  const MeasuredCapacity = Number(useSelector(selectMeasuredCapacity));
+  const LowRateCapacity = Number(useSelector(selectLowRateCapacity))
+  const ActiveElectrode = useSelector(selectActiveElectrode)
+  const EnergyDensity = Number(useSelector(selectEDensity));
+  const Energy = Number(useSelector(selectEnergy));
+  const SpecificEnergy = Number(useSelector(selectSpecificEnergy))
+  const Mass = Number(useSelector(selectMass))
+  const EnergyEfficiency = Number(useSelector(selectEnergyEfficiency))
   const dispatch = useDispatch();
 
 
   function massToMassLoading(mass, diameter){
-    return mass / ( 0.25 * Math.PI * diameter**2)
+    return mass / ( 0.25 * Math.PI * (diameter*1e-3)**2)
   }
 
   function stackThickness(anodeThickness, cathodeThickness, separatorThickness, ACCThickness, CCCThickness){
-    return 2 * ( anodeThickness + cathodeThickness + separatorThickness ) - ( ACCThickness + CCCThickness )
+    return 2e-6 * ( anodeThickness + cathodeThickness + separatorThickness ) - 1e-6 * ( ACCThickness + CCCThickness )
   }
 
   function massLoading(anodeMassLoading, cathodeMassLoading, separatorMassLoading, ACCMassLoading, CCCMassLoading){
@@ -58,25 +77,39 @@ export function Cell() {
     return caseInternalVolume / stackThickness
   }
 
-  function energyDensity(){
-    // 2 * stackArea * arealEnergyDensity
-    var AnodeMassLoading = massToMassLoading(AWetMass, ADiameter)
-    var CathodeMassLoading = massToMassLoading(CWetMass, CDiameter)
-    var StackThickness = stackThickness(AThickness, CThickness, SThickness, ACCThickness, CCCThickness)
-    var StackMassLoading = massLoading(AnodeMassLoading, CathodeMassLoading, SMassLoading, ACCMassLoading, CCCMassLoading)
-    var StackArea = stackArea(CaseInternalVolume, StackThickness)
-
-    var energyD = 2 * StackArea * ArealEnergyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading )
-    dispatch(setEDensity(energyD))
-    
-    return energyD
+  function arealEnergyDensity(avgVoltage, measuredCapacity, diameter){
+    return avgVoltage * measuredCapacity * 1e-3 / (0.25 * Math.PI * (diameter * 1e-3) **2) // Wh
   }
 
+  function calcEnergy(){
+    // 2 * stackArea * arealEnergyDensity
+    var AnodeMassLoading = massToMassLoading(AWetMass, Diameter)
+    var CathodeMassLoading = massToMassLoading(CWetMass, Diameter)
+    var ACCMassLoading = massToMassLoading(ACCMass, Diameter)
+    var CCCMassLoading = massToMassLoading(CCCMass, Diameter)
+    var StackThickness = stackThickness(AThickness, CThickness, SThickness, ACCThickness, CCCThickness)
+    var StackMassLoading = massLoading(AnodeMassLoading, CathodeMassLoading, SMassLoading, ACCMassLoading, CCCMassLoading)
+    var StackArea = stackArea(CaseInternalVolume, StackThickness) // m2
+    var energyDensity = arealEnergyDensity(AvgVoltage, MeasuredCapacity, Diameter)  // Wh m-2
+    var energy = StackArea * energyDensity  // Wh
+    var theoreticEnergy = StackArea * arealEnergyDensity(AvgVoltage, LowRateCapacity, Diameter)
+    var mass = CaseMass + StackArea * StackMassLoading // kg
+    var specificEnergy = 2 * StackArea * energyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading )
+    dispatch(setEDensity(energyDensity))
+    dispatch(setEnergy(energy))
+    dispatch(setMass(mass))
+    dispatch(setSpecificEnergy(specificEnergy))
+    dispatch(setEnergyEfficiency(energy/theoreticEnergy))
+  }
 
+  useEffect(() => {
+    calcEnergy()
+  })
+
+  if (ActiveElectrode !== 'none'){
   return (
     <div>
-      <div className="container">
-        <div className='box-row-4'>
+      <div className="container sticky">
             <div className='box-12'>
             <div className={styles.resultsSection}>
                 <div className='box-row'>
@@ -92,17 +125,50 @@ export function Cell() {
                 <div className='box-row'>
                     <div className='box-12'>
                         <div className={styles.resultTitle}>
+                            Energy / Wh
+                            </div>
+                            <div className={styles.result}>
+                            {parseFloat(Energy).toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+                <div className='box-row'>
+                    <div className='box-12'>
+                        <div className={styles.resultTitle}>
+                            Energy density / Wh m-2
+                            </div>
+                            <div className={styles.result}>
+                            {parseFloat(EnergyDensity).toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+                <div className='box-row'>
+                    <div className='box-12'>
+                        <div className={styles.resultTitle}>
                             Specific energy / Wh kg-1
                             </div>
                             <div className={styles.result}>
-                            {parseFloat(energyDensity()).toFixed(2)}
+                            {parseFloat(SpecificEnergy).toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+                <div className='box-row'>
+                    <div className='box-12'>
+                        <div className={styles.resultTitle}>
+                            Mass / Wh kg-1
+                            </div>
+                            <div className={styles.result}>
+                            {parseFloat(Mass).toFixed(2)}
                         </div>
                     </div>
                 </div>
                 {/* <div className='box-row'>
                     <div className='box-12'>
-                        <div className={styles.result}>
-                            Mass: {2} kg
+                        <div className={styles.resultTitle}>
+                            Energy efficiency
+                            </div>
+                            <div className={styles.result}>
+                            {parseFloat(EnergyEfficiency).toFixed(2)}
                         </div>
                     </div>
                 </div> */}
@@ -111,6 +177,71 @@ export function Cell() {
       
     </div>
     </div>
-    </div>
   );
+  }
+  else{
+
+    return (
+      <div>
+        <div className="container sticky">
+              <div className='box-12'>
+              <div className={styles.resultsSection}>
+                  <div className='box-row'>
+                      <div className='box-12'>
+                      <p className={styles.title}>
+                          Cell
+                      </p>
+                      <p className={styles.subtitle}>
+                          (21700 format)
+                      </p>
+                      </div>
+                  </div>
+                  <div className='box-row'>
+                      <div className='box-12'>
+                          <div className={styles.resultTitle}>
+                              Energy / Wh
+                              </div>
+                              <div className={styles.result}>
+                              ?
+                          </div>
+                      </div>
+                  </div>
+                  <div className='box-row'>
+                      <div className='box-12'>
+                          <div className={styles.resultTitle}>
+                              Energy density / Wh m-2
+                              </div>
+                              <div className={styles.result}>
+                              ?
+                          </div>
+                      </div>
+                  </div>
+                  <div className='box-row'>
+                      <div className='box-12'>
+                          <div className={styles.resultTitle}>
+                              Specific energy / Wh kg-1
+                              </div>
+                              <div className={styles.result}>
+                              ?
+                          </div>
+                      </div>
+                  </div>
+                  <div className='box-row'>
+                      <div className='box-12'>
+                          <div className={styles.resultTitle}>
+                              Mass / Wh kg-1
+                              </div>
+                              <div className={styles.result}>
+                              ?
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              </div>
+        
+      </div>
+      </div>
+    );
+
+  }
 }
