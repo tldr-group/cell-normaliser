@@ -6,20 +6,20 @@ const initialState = {
       mass: 0,
       thickness: 0,
       massPercentDrySlurry: 0.95,
-      density: 0,
-      theoreticSpecificCapacity: 216,
+      density: 4.7e6,
+      theoreticSpecificCapacity: 0.195,
     },
     binder: {
       mass: 0,
       thickness: 0,
       massPercentDrySlurry: 0.025,
-      density: 0,
+      density: 1.78e6,
     },
     conductiveAdditive: {
       mass: 0,
       thickness: 0,
       massPercentDrySlurry: 0.025,
-      density: 0,
+      density: 2e6,
     },
     electrolyte: {
       mass: 0,
@@ -79,9 +79,9 @@ const initialState = {
   arealEnergyDensity: 200,
   totalCathodeMass: Number((27 * (0.25 * 100e-6 * Math.PI)).toPrecision(2)) + 30e-3,
   totalCathodeThickness: 10 + 100,
-  totalAnodeMass: 0,
+  totalAnodeMass: 22e-3 + 2.1e-3,
+  totalAnodeThickness: 10+100,
   npRatio: 1.2,
-  
   activeElectrode: 'none',
 };
 

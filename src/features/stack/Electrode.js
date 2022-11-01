@@ -77,7 +77,6 @@ export function Electrode() {
 
   function validate(e){
     // Total thickness > ccc thickness
-    console.log(e.target)
     e.target.classList.toggle("invalid");
     if( TotalCathodeThickness-CCCThickness<0){
         e.target.classList.add("invalid");
@@ -91,9 +90,9 @@ export function Electrode() {
   }
 
   function syncElectrode(){
+    var LRCap = Stack.npRatio * LowRateCapacity
     if (ActiveElectrode === 'cathode'){
-        var LRAnodeCap = Stack.npRatio * LowRateCapacity
-        var anodeAMMass = LRAnodeCap / (Stack.anode.activeMaterial.theoreticSpecificCapacity*1e3)
+        var anodeAMMass = LRCap / (Stack.anode.activeMaterial.theoreticSpecificCapacity*1e3)
         var anodeBMass = Stack.anode.binder.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
         var anodeCAMass = Stack.anode.conductiveAdditive.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
 
@@ -104,18 +103,34 @@ export function Electrode() {
         var anodeThickness = (anodeAMThickness + anodeBThickness + anodeCAThickness) / (1 - Stack.anode.porosity)
         var anodeEThickness = Stack.anode.porosity * anodeThickness
         var anodeEMass = anodeEThickness*1e-6 * Stack.anode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
-        var anodeMass = Number(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass).toPrecision(1)
-        var anodeThickness = Number(anodeAMThickness+anodeBThickness+anodeCAThickness+anodeEThickness).toPrecision(1)
+        var anodeMass = Number(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass)
         dispatch(setAThickness(anodeThickness))
         dispatch(setAWetMass(anodeMass))
         dispatch(setTotalAnodeMass(anodeMass+ACCMass))
         dispatch(setTotalAnodeThickness(anodeThickness+ACCThickness))
     }
+    else if(ActiveElectrode === 'anode'){
+        var cathodeAMMass = LRCap / (Stack.cathode.activeMaterial.theoreticSpecificCapacity*1e3)
+        var cathodeBMass = Stack.cathode.binder.massPercentDrySlurry * cathodeAMMass / (1 - Stack.cathode.binder.massPercentDrySlurry - Stack.cathode.conductiveAdditive.massPercentDrySlurry)
+        var cathodeCAMass = Stack.cathode.conductiveAdditive.massPercentDrySlurry * cathodeAMMass / (1 - Stack.cathode.binder.massPercentDrySlurry - Stack.cathode.conductiveAdditive.massPercentDrySlurry)
+
+        var cathodeAMThickness = cathodeAMMass *1e6 / (Stack.cathode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
+        var cathodeBThickness = cathodeBMass*1e6 / (Stack.cathode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
+        var cathodeCAThickness = cathodeCAMass*1e6 / (Stack.cathode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
+
+        var cathodeThickness = (cathodeAMThickness + cathodeBThickness + cathodeCAThickness) / (1 - Stack.cathode.porosity)
+        var cathodeEThickness = Stack.cathode.porosity * cathodeThickness
+        var cathodeEMass = cathodeEThickness*1e-6 * Stack.cathode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
+        var cathodeMass = Number(cathodeAMMass+cathodeBMass+cathodeCAMass+cathodeEMass)
+        dispatch(setAThickness(cathodeThickness))
+        dispatch(setAWetMass(cathodeMass))
+        dispatch(setTotalCathodeMass(cathodeMass+ACCMass))
+        dispatch(setTotalCathodeThickness(cathodeThickness+ACCThickness))
+    }
   }
 
   function electrodeRender () {
     if (ActiveElectrode === 'cathode'){
-        syncElectrode()
         return(
             <div>
             <div className={styles.cathode}>
