@@ -15,7 +15,7 @@ import {
   selectAvgVoltage,
   selectMeasuredCapacity,
   selectActiveElectrode,
-  selectStack
+  // selectStack
 } from '../stack/stackSlice';
 import {
     setEDensity,
@@ -29,7 +29,7 @@ import {
     setMass,
     selectMass,
     setEnergyEfficiency,
-    selectEnergyEfficiency,
+    // selectEnergyEfficiency,
 } from './cellSlice'
 import styles from './Cell.module.css';
 import './../../App.css'
@@ -57,7 +57,7 @@ export function Cell() {
   const Energy = Number(useSelector(selectEnergy));
   const SpecificEnergy = Number(useSelector(selectSpecificEnergy))
   const Mass = Number(useSelector(selectMass))
-  const EnergyEfficiency = Number(useSelector(selectEnergyEfficiency))
+  // const EnergyEfficiency = Number(useSelector(selectEnergyEfficiency))
   const dispatch = useDispatch();
 
 

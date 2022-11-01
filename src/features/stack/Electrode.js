@@ -1,18 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  setCWetMass,
-  selectCWetMass,
+//   setCWetMass,
+//   selectCWetMass,
   setAWetMass,
-  selectAWetMass,
-  setCThickness,
-  selectCThickness,
+//   selectAWetMass,
+//   setCThickness,
+//   selectCThickness,
   setAThickness,
-  selectAThickness,
+//   selectAThickness,
   setDiameter,
   selectDiameter,
-  setArealEnergyDensity,
-  selectArealEnergyDensity,
+//   setArealEnergyDensity,
+//   selectArealEnergyDensity,
   selectActiveElectrode,
   setActiveElectrode,
   setCCCThickness,
@@ -36,7 +36,7 @@ import {
   selectMeasuredCapacity,
   setMeasuredCapacity,
   selectStack,
-  setAnodeAMTheoreticSpecificCapacity,
+//   setAnodeAMTheoreticSpecificCapacity,
   selectACCThickness,
   setACCThickness
 } from './stackSlice';
@@ -45,12 +45,12 @@ import styles from './Stack.module.css';
 import './../../App.css'
 
 export function Electrode() {
-  const CWetMass = useSelector(selectCWetMass);
-  const CThickness = useSelector(selectCThickness);
-  const AWetMass = useSelector(selectAWetMass);
-  const AThickness = useSelector(selectAThickness);
+//   const CWetMass = useSelector(selectCWetMass);
+//   const CThickness = useSelector(selectCThickness);
+//   const AWetMass = useSelector(selectAWetMass);
+//   const AThickness = useSelector(selectAThickness);
   const Diameter = useSelector(selectDiameter);
-  const ArealEnergyDensity = useSelector(selectArealEnergyDensity);
+//   const ArealEnergyDensity = useSelector(selectArealEnergyDensity);
   const ActiveElectrode = useSelector(selectActiveElectrode);
   const CCCThickness = useSelector(selectCCCThickness);
   const CCCMass = useSelector(selectCCCMass);
