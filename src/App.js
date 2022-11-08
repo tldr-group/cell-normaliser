@@ -1,4 +1,6 @@
 import React from 'react';
+import { Electrode } from './features/stack/Electrode';
+import { SubElectrode } from './features/stack/SubElectrode';
 import { Stack } from './features/stack/Stack';
 import { Cell } from './features/cell/Cell';
 // import { Visual } from './features/visual/Visual';
@@ -11,23 +13,27 @@ function App() {
         <div className='container'>
         <div className='box-row'>
         <div className='box-12'>
-          <p className='title'>
+          <div className='title'>
           🔋 Cell Normaliser 🔋
-          </p>
-        </div>
+          </div>
+          <div className='subtitle'>
+          WIP - email <a href='mailto:i.squires20@imperial.ac.uk'>i.squires20@imperial.ac.uk</a> for more info
+          </div>
+          </div>
         </div>
           <div className='box-row'>
           <div className='box-8'>
-            <Stack />
+            <Electrode />
+            <SubElectrode />
         </div>
-        <div className='box-4'>
+        <div className='box-4 sticky'>
         <div className='box-row'>
+        <div className='box-12'>
+          <Stack />
+        </div>
         <div className='box-12'>
           <Cell />
         </div>
-        {/* <div className='box-12'>
-          <Visual />
-        </div> */}
         </div>
         </div>
         </div>

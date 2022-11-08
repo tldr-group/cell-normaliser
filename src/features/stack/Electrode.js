@@ -1,18 +1,10 @@
-import React from 'react';
+import { React, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-//   setCWetMass,
-//   selectCWetMass,
   setAWetMass,
-//   selectAWetMass,
-//   setCThickness,
-//   selectCThickness,
   setAThickness,
-//   selectAThickness,
   setDiameter,
   selectDiameter,
-//   setArealEnergyDensity,
-//   selectArealEnergyDensity,
   selectActiveElectrode,
   setActiveElectrode,
   setCCCThickness,
@@ -30,27 +22,29 @@ import {
   setTotalAnodeThickness,
   selectTotalAnodeThickness,
   selectAvgVoltage,
-  setAvgVoltage,
   selectLowRateCapacity,
-  setLowRateCapacity,
   selectMeasuredCapacity,
-  setMeasuredCapacity,
   selectStack,
-//   setAnodeAMTheoreticSpecificCapacity,
   selectACCThickness,
-  setACCThickness
+  setACCThickness,
+  setAAMMass,
+  setAAMThickness,
+  setCAMMass,
+  setCAMThickness,
+  setCBMass,
+  setCBThickness,
+  setCCAMass,
+  setCCAThickness,
+  setCEMass,
+  setCEThickness,
+  setCPorosity
 } from './stackSlice';
 
 import styles from './Stack.module.css';
 import './../../App.css'
 
 export function Electrode() {
-//   const CWetMass = useSelector(selectCWetMass);
-//   const CThickness = useSelector(selectCThickness);
-//   const AWetMass = useSelector(selectAWetMass);
-//   const AThickness = useSelector(selectAThickness);
   const Diameter = useSelector(selectDiameter);
-//   const ArealEnergyDensity = useSelector(selectArealEnergyDensity);
   const ActiveElectrode = useSelector(selectActiveElectrode);
   const CCCThickness = useSelector(selectCCCThickness);
   const CCCMass = useSelector(selectCCCMass);
@@ -65,6 +59,9 @@ export function Electrode() {
   const MeasuredCapacity = useSelector(selectMeasuredCapacity)
   const Stack = useSelector(selectStack)
   const dispatch = useDispatch();
+
+  useEffect(() => 
+  updateCathode(), [Stack])
 
   function valueReturn (value) {
     if(Number(value) >=0){
@@ -96,14 +93,19 @@ export function Electrode() {
         var anodeBMass = Stack.anode.binder.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
         var anodeCAMass = Stack.anode.conductiveAdditive.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
 
+        dispatch(setAAMMass(anodeAMMass))
+
         var anodeAMThickness = anodeAMMass *1e6 / (Stack.anode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var anodeBThickness = anodeBMass*1e6 / (Stack.anode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var anodeCAThickness = anodeCAMass*1e6 / (Stack.anode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
+
+        dispatch(setAAMThickness(anodeAMThickness))
 
         var anodeThickness = (anodeAMThickness + anodeBThickness + anodeCAThickness) / (1 - Stack.anode.porosity)
         var anodeEThickness = Stack.anode.porosity * anodeThickness
         var anodeEMass = anodeEThickness*1e-6 * Stack.anode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
         var anodeMass = Number(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass)
+
         dispatch(setAThickness(anodeThickness))
         dispatch(setAWetMass(anodeMass))
         dispatch(setTotalAnodeMass(anodeMass+ACCMass))
@@ -124,24 +126,46 @@ export function Electrode() {
         var cathodeMass = Number(cathodeAMMass+cathodeBMass+cathodeCAMass+cathodeEMass)
         dispatch(setAThickness(cathodeThickness))
         dispatch(setAWetMass(cathodeMass))
-        dispatch(setTotalCathodeMass(cathodeMass+ACCMass))
-        dispatch(setTotalCathodeThickness(cathodeThickness+ACCThickness))
+        dispatch(setTotalCathodeMass(cathodeMass+CCCMass))
+        dispatch(setTotalCathodeThickness(cathodeThickness+CCCThickness))
     }
   }
 
-  function electrodeRender () {
-    if (ActiveElectrode === 'cathode'){
-        return(
-            <div>
-            <div className={styles.cathode}>
+  function updateCathode() {
+    // Active material
+    var massAM = LowRateCapacity * 1e-3 / Stack.cathode.activeMaterial.theoreticSpecificCapacity
+    dispatch(setCAMMass(massAM))
+    var thicknessAM = massAM*1e6 / (Stack.cathode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setCAMThickness(thicknessAM))
+    // Binder
+    var massB = massAM * (Stack.cathode.binder.massPercentDrySlurry) / (Stack.cathode.activeMaterial.massPercentDrySlurry)
+    dispatch(setCBMass(massB))
+    var thicknessB = massB*1e6 / (Stack.cathode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setCBThickness(thicknessB))
+    // Conductive additive
+    var massCA = massAM * (Stack.cathode.conductiveAdditive.massPercentDrySlurry) / (Stack.cathode.activeMaterial.massPercentDrySlurry)
+    dispatch(setCCAMass(massCA))
+    var thicknessCA = massCA*1e6 / (Stack.cathode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setCCAThickness(thicknessCA))
+    // Electrolyte
+    var thicknessE = TotalCathodeThickness - thicknessAM - thicknessB - thicknessCA
+    var porosity = thicknessE / TotalCathodeThickness
+    var massE = thicknessE * Stack.cathode.electrolyte.density * 0.25 * Math.PI * (Diameter * 1e-3) **2
+    dispatch(setCEMass(massE))
+    dispatch(setCEThickness(thicknessE))
+    dispatch(setCPorosity(porosity))
 
-            <div className="box-6-offset-3">
+  }
+    
+        return(
+            <div className="box-row">
+            <div className="box-6">
+            <div className={styles.cathode}>
             <p className={styles.title}>
                 <button className={styles.button} onClick={() => dispatch(setActiveElectrode('anode'))}>
                     Cathode
                 </button>
             </p>
-                </div>
                 <div className='box-3'>
                 <p className={styles.title}>
                 <button className={styles.syncButton} onClick={() => (syncElectrode())}>
@@ -222,65 +246,19 @@ export function Electrode() {
                 >
                 </input>
             </div>
+            </div>
         </div>
 
-        <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Average Voltage / V
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set avg voltage"
-            onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
-            value={String(valueReturn(AverageVoltage))}
-            >
-            </input>
-            </div>
-        
-            <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Low Rate Capacity / mAh
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set low rate capacity"
-            onChange={(e) => dispatch(setLowRateCapacity(e.target.value))}
-            value={String(valueReturn(LowRateCapacity))}
-            >
-            </input>
-            </div>
 
-            <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Measured Capacity / mAh
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set measured capacity"
-            onChange={(e) => dispatch(setMeasuredCapacity(e.target.value))}
-            value={String(valueReturn(MeasuredCapacity))}
-            >
-            </input>
-            </div>
 
-            </div>
-
-        )
-
-    }
-    // ANODE
-    else if(ActiveElectrode === 'anode'){
-        return(
-            <div>
+            <div className="box-6">
             <div className={styles.anode}>
-
-            <div className="box-6-offset-3">
             <p className={styles.title}>
                 <button className={styles.button} onClick={() => dispatch(setActiveElectrode('cathode'))}>
                     Anode
                 </button>
             </p>
-                </div>
+                
                 <div className='box-3'>
                 <p className={styles.title}>
                 <button className={styles.syncButton} onClick={() => (syncElectrode())}>
@@ -360,81 +338,13 @@ export function Electrode() {
                 value={String(valueReturn(Diameter))}
                 >
                 </input>
+                </div>
             </div>
         </div>
 
-        <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Average Voltage / V
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set avg voltage"
-            onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
-            value={String(valueReturn(AverageVoltage))}
-            >
-            </input>
-            </div>
         
-            <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Low Rate Capacity / mAh
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set low rate capacity"
-            onChange={(e) => dispatch(setLowRateCapacity(e.target.value))}
-            value={String(valueReturn(LowRateCapacity))}
-            >
-            </input>
-            </div>
-
-            <div className="box-6-offset-3">
-        <p className={styles.title}>
-            Measured Capacity / mAh
-            </p>
-            <input
-            className={styles.button}
-            aria-label="Set measured capacity"
-            onChange={(e) => dispatch(setMeasuredCapacity(e.target.value))}
-            value={String(valueReturn(MeasuredCapacity))}
-            >
-            </input>
-            </div>
-
             </div>
 
         )
-    }
-    else{
-        return(
-            <div>
-                <p className={styles.title}>
-                    Select your electrode
-            </p>
-            <div className='box-row'>
-            <div className='box-6'>
-            <button className={styles.button} onClick={() => dispatch(setActiveElectrode('cathode'))}>
-                Cathode
-            </button>
-            </div>
-            <div className='box-6'>
-            <button className={styles.button} onClick={() => dispatch(setActiveElectrode('anode'))}>
-                Anode
-            </button>
-            </div>
-            </div>
-        </div>
-        )
-    }
-  }
-
-
-  return (
-        <div className="box-row">
-        <div className='box-8-offset-2'>
-            {electrodeRender()}
-      </div>
-      </div>
-  );
+    
 }

@@ -1,12 +1,26 @@
 .electrodeSection{
   background-color: rgba(189, 54, 54, 0.1);
   border-radius: 5px;
+  grid-column: 12;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.subElectrodeSection{
+  background-color: rgba(98, 42, 42, 0.1);
+  border-radius: 5px;
+  /* grid-column: 12; */
+  /* display: grid; */
+  /* grid-template-columns: repeat(12, 1fr); */
+  grid-template-rows: 1fr;
+  margin-top: 20px;
 }
 
 .cathode{
   background-color: rgba(54, 189, 81, 0.1);
   border-radius: 5px;
-  grid-column: 12;
+  grid-column: span 6;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 1fr;
@@ -15,10 +29,40 @@
 .anode{
   background-color: rgba(61, 54, 189, 0.1);
   border-radius: 5px;
-  grid-column: 12;
+  grid-column: span 6;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 1fr;
+}
+
+
+.subElectrodeBox{
+  background-color: rgba(61, 54, 189, 0.1);
+  border-radius: 5px;
+  grid-column: span 12;
+  display: grid;
+  margin-top: 10px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.subElectrodeTitle{
+  font-size: 10pt;
+  margin-top: 5px;
+  font-weight: 800;
+}
+
+.subElectrodeSubTitle{
+  font-size: 10pt;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.subElectrodeData{
+  font-size: 10pt;
+  text-align: left;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .title{

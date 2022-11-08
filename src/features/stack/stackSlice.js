@@ -24,7 +24,7 @@ const initialState = {
     electrolyte: {
       mass: 0,
       thickness: 0,
-      density: 0,
+      density: 1.2e6,
     },
     porosity: 0,
     wetMass: 30e-3, // in g
@@ -82,7 +82,7 @@ const initialState = {
   totalAnodeMass: 22e-3 + 2.1e-3,
   totalAnodeThickness: 10+100,
   npRatio: 1.2,
-  activeElectrode: 'none',
+  activeElectrode: 'cathode',
 };
 
 export const stackSlice = createSlice({
@@ -149,6 +149,65 @@ export const stackSlice = createSlice({
     setMeasuredCapacity: (state, action) => {
       state.measuredCapacity = action.payload;
     },
+    // SUBELECTRODE PROPERTIES
+    // Active material
+    setCAMMass: (state, action) => {
+      state.cathode.activeMaterial.mass = action.payload;
+    },
+    setCAMThickness: (state, action) => {
+      state.cathode.activeMaterial.thickness = action.payload;
+    },
+    setAAMMass: (state, action) => {
+      state.anode.activeMaterial.mass = action.payload;
+    },
+    setAAMThickness: (state, action) => {
+      state.anode.activeMaterial.thickness = action.payload;
+    },
+    // Binder
+    setCBMass: (state, action) => {
+      state.cathode.binder.mass = action.payload;
+    },
+    setCBThickness: (state, action) => {
+      state.cathode.binder.thickness = action.payload;
+    },
+    setABMass: (state, action) => {
+      state.anode.binder.mass = action.payload;
+    },
+    setABThickness: (state, action) => {
+      state.anode.binder.thickness = action.payload;
+    },
+    // Conductive additive
+    setCCAMass: (state, action) => {
+      state.cathode.conductiveAdditive.mass = action.payload;
+    },
+    setCCAThickness: (state, action) => {
+      state.cathode.conductiveAdditive.thickness = action.payload;
+    },
+    setACAMass: (state, action) => {
+      state.anode.conductiveAdditive.mass = action.payload;
+    },
+    setACAThickness: (state, action) => {
+      state.anode.conductiveAdditive.thickness = action.payload;
+    },
+    // Electrolyte
+    setCEMass: (state, action) => {
+      state.cathode.electrolyte.mass = action.payload;
+    },
+    setCEThickness: (state, action) => {
+      state.cathode.electrolyte.thickness = action.payload;
+    },
+    setAEMass: (state, action) => {
+      state.anode.electrolyte.mass = action.payload;
+    },
+    setAEThickness: (state, action) => {
+      state.anode.electrolyte.thickness = action.payload;
+    },
+    setCPorosity: (state, action) => {
+      state.cathode.porosity = action.payload;
+    },
+    setAPorosity: (state, action) => {
+      state.anode.porosity = action.payload;
+    },
   },
 });
 
@@ -156,7 +215,12 @@ export const { setCWetMass, setAWetMass, setCThickness, setAThickness,
                 setDiameter, setArealEnergyDensity, setActiveElectrode,
                 setCCCThickness, setCCCMass, setTotalCathodeMass, setTotalCathodeThickness,
                 setAvgVoltage, setLowRateCapacity, setMeasuredCapacity, setACCMass,
-                setACCThickness, setTotalAnodeMass, setTotalAnodeThickness } = stackSlice.actions;
+                setACCThickness, setTotalAnodeMass, setTotalAnodeThickness,
+                setCAMMass, setCAMThickness, setAAMMass, setAAMThickness,
+                setCBMass, setCBThickness, setABMass, setABThickness,
+                setCCAMass, setCCAThickness, setACAMass, setACAThickness,
+                setCEMass, setCEThickness, setAEMass, setAEThickness,
+                setCPorosity, setAPorosity } = stackSlice.actions;
 
 
 export const selectCWetMass = (state) => state.stack.cathode.wetMass;
@@ -173,6 +237,7 @@ export const selectACCMassLoading = (state) => state.stack.anodeCC.massLoading;
 export const selectACCMass = (state) => state.stack.anodeCC.mass;
 export const selectCCCThickness = (state) => state.stack.cathodeCC.thickness;
 export const selectACCThickness = (state) => state.stack.anodeCC.thickness;
+export const selectSMass = (state) => state.stack.separator.mass;
 export const selectTotalCathodeMass = (state) => state.stack.totalCathodeMass;
 export const selectTotalCathodeThickness = (state) => state.stack.totalCathodeThickness;
 export const selectTotalAnodeMass = (state) => state.stack.totalAnodeMass;
