@@ -15,7 +15,6 @@ import {
   selectAvgVoltage,
   selectMeasuredCapacity,
   selectActiveElectrode,
-  // selectStack
 } from '../stack/stackSlice';
 import {
     setEDensity,
@@ -29,7 +28,10 @@ import {
     setMass,
     selectMass,
     setEnergyEfficiency,
-    // selectEnergyEfficiency,
+    selectActiveCellType,
+    selectCell,
+    setCase,
+    setActiveCellType
 } from './cellSlice'
 import styles from './Cell.module.css';
 import './../../App.css'
@@ -57,12 +59,13 @@ export function Cell() {
   const Energy = Number(useSelector(selectEnergy));
   const SpecificEnergy = Number(useSelector(selectSpecificEnergy))
   const Mass = Number(useSelector(selectMass))
-  // const EnergyEfficiency = Number(useSelector(selectEnergyEfficiency))
+  const ActiveCellType = Number(useSelector(selectActiveCellType))
+  const Cell = useSelector(selectCell)
   const dispatch = useDispatch();
 
 
   function massToMassLoading(mass, diameter){
-    return mass / ( 0.25 * Math.PI * (diameter*1e-3)**2)
+    return mass / ( 0.25 * Math.PI * (diameter*1e-3)**2) // g m-2
   }
 
   function stackThickness(anodeThickness, cathodeThickness, separatorThickness, ACCThickness, CCCThickness){
@@ -81,20 +84,25 @@ export function Cell() {
     return avgVoltage * measuredCapacity * 1e-3 / (0.25 * Math.PI * (diameter * 1e-3) **2) // Wh
   }
 
+  function setCellType(cellType, caseObj){
+    dispatch(setCase(caseObj.case))
+    dispatch(setActiveCellType(cellType))
+  }
+
   function calcEnergy(){
     // 2 * stackArea * arealEnergyDensity
-    var AnodeMassLoading = massToMassLoading(AWetMass, Diameter)
+    var AnodeMassLoading = massToMassLoading(AWetMass, Diameter) // g m-2
     var CathodeMassLoading = massToMassLoading(CWetMass, Diameter)
     var ACCMassLoading = massToMassLoading(ACCMass, Diameter)
     var CCCMassLoading = massToMassLoading(CCCMass, Diameter)
-    var StackThickness = stackThickness(AThickness, CThickness, SThickness, ACCThickness, CCCThickness)
+    var StackThickness = stackThickness(AThickness, CThickness, SThickness, ACCThickness, CCCThickness) // m
     var StackMassLoading = massLoading(AnodeMassLoading, CathodeMassLoading, SMassLoading, ACCMassLoading, CCCMassLoading)
     var StackArea = stackArea(CaseInternalVolume, StackThickness) // m2
     var energyDensity = arealEnergyDensity(AvgVoltage, MeasuredCapacity, Diameter)  // Wh m-2
     var energy = StackArea * energyDensity  // Wh
     var theoreticEnergy = StackArea * arealEnergyDensity(AvgVoltage, LowRateCapacity, Diameter)
-    var mass = CaseMass + StackArea * StackMassLoading // kg
-    var specificEnergy = 2 * StackArea * energyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading )
+    var mass = CaseMass + StackArea * StackMassLoading // g
+    var specificEnergy = 2 * StackArea * energyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading ) // Wh kg-1
     dispatch(setEDensity(energyDensity))
     dispatch(setEnergy(energy))
     dispatch(setMass(mass))
@@ -106,10 +114,14 @@ export function Cell() {
     calcEnergy()
   })
 
+  useEffect(() => {
+    setCellType('18650', Cell.cells['18650'])
+  }, [])
+
   if (ActiveElectrode !== 'none'){
   return (
     <div>
-      <div className="container sticky">
+      <div className="container">
             <div className='box-12'>
             <div className={styles.resultsSection}>
                 <div className='box-row'>
@@ -117,9 +129,20 @@ export function Cell() {
                     <p className={styles.title}>
                         Cell
                     </p>
-                    <p className={styles.subtitle}>
-                        (21700 format)
-                    </p>
+                    <div tabindex={0} className={styles.dropdown}>
+                        <div className={styles.dropdownBtn}>{ActiveCellType}</div>
+                        <div className={styles.dropdownItems}>
+                          {Object.keys(Cell.cells).map(l => {
+                              return(
+                                <div className={styles.dropdownItem} onClick={() => setCellType(l, Cell.cells[l])}>
+                                  {l}
+                                </div>
+                              )
+                            })
+                          }
+                        
+                          </div>
+                    </div>
                     </div>
                 </div>
                 <div className='box-row'>
@@ -155,7 +178,7 @@ export function Cell() {
                 <div className='box-row'>
                     <div className='box-12'>
                         <div className={styles.resultTitle}>
-                            Mass / Wh kg-1
+                            Mass / g
                             </div>
                             <div className={styles.result}>
                             {parseFloat(Mass).toFixed(2)}
@@ -183,7 +206,7 @@ export function Cell() {
 
     return (
       <div>
-        <div className="container sticky">
+        <div className="container">
               <div className='box-12'>
               <div className={styles.resultsSection}>
                   <div className='box-row'>

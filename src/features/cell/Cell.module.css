@@ -30,3 +30,31 @@
     border-radius: 5px;
     margin-top: 5px;
 }
+
+.dropdown{
+    font-size: 18px;
+    background-color: rgba(251, 251, 251, 0.291);
+    border: 2px solid transparent;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.dropdown:hover{
+    cursor: pointer;
+}
+
+.dropdown:focus > .dropdownItems{
+    display:block
+}
+
+
+.dropdownItems{
+    display:none;
+}
+
+.dropdownItem{
+    background-color: rgba(251, 251, 251, 0.438);
+    border: 1px solid rgba(0, 0, 0);
+    border-radius: 5px;
+    margin-top: 5px;
+}
+

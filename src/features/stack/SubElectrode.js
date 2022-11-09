@@ -1,54 +1,66 @@
-import React from 'react';
+import React, { useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import stackSlice, {
-  selectDiameter,
-  selectActiveElectrode,
+import {
   selectCCCThickness,
   selectCCCMass,
   selectACCMass,
   selectSMass,
   selectSThickness,
-  selectTotalCathodeMass,
-  selectTotalCathodeThickness,
-  selectTotalAnodeMass,
-  selectTotalAnodeThickness,
-  selectAvgVoltage,
-  selectLowRateCapacity,
-  selectMeasuredCapacity,
   selectStack,
   selectACCThickness,
+  selectShowSubElectrode,
+  setShowSubelectrode
 } from './stackSlice';
 
 import styles from './Stack.module.css';
 import './../../App.css'
 
 export function SubElectrode() {
-//   const CWetMass = useSelector(selectCWetMass);
-//   const CThickness = useSelector(selectCThickness);
-//   const AWetMass = useSelector(selectAWetMass);
-//   const AThickness = useSelector(selectAThickness);
-  const Diameter = useSelector(selectDiameter);
-//   const ArealEnergyDensity = useSelector(selectArealEnergyDensity);
-  const ActiveElectrode = useSelector(selectActiveElectrode);
+const subElectrodeSection = useRef(null);
   const CCCThickness = useSelector(selectCCCThickness);
   const CCCMass = useSelector(selectCCCMass);
   const ACCMass = useSelector(selectACCMass);
   const ACCThickness = useSelector(selectACCThickness);
   const SMass = useSelector(selectSMass)
   const SThickness = useSelector(selectSThickness)
-  const TotalCathodeMass = useSelector(selectTotalCathodeMass)
-  const TotalCathodeThickness = useSelector(selectTotalCathodeThickness)
-  const TotalAnodeMass = useSelector(selectTotalAnodeMass)
-  const TotalAnodeThickness = useSelector(selectTotalAnodeThickness)
-  const AverageVoltage = useSelector(selectAvgVoltage)
-  const LowRateCapacity = useSelector(selectLowRateCapacity)
-  const MeasuredCapacity = useSelector(selectMeasuredCapacity)
   const Stack = useSelector(selectStack)
-  const dispatch = useDispatch();
+  const ShowSubElectrode = useSelector(selectShowSubElectrode)
+  const dispatch = useDispatch()
 
-  function subElectrodeRender () {
+  const precision = 4
+
+  function toggleSubElectrode (ref){
+    console.log(ref.current)
+    ref.current.classList.toggle('show')
+    dispatch(setShowSubelectrode(!ShowSubElectrode))
+  }
+
+  function showDetails(){
+    console.log(ShowSubElectrode)
+    if(ShowSubElectrode){
+        return('Less')
+    }
+    else{
+        return('More')
+    }
+    
+}
+
+  function subElectrodeRender (ref) {
+    
         return(
             <div>
+                <div className="box-row">
+                        <div className='box-4-offset-4'>
+                        <div className={styles.moreBtn} onClick={() => toggleSubElectrode(ref)}>
+                <div className={styles.title}>
+                    {showDetails()}
+                </div>
+                </div>
+                </div>
+                </div>
+
+            <div className={styles.subElectrodeSection} ref={ref}>
                 <div className='box-row'>
                     <div className='box-6'>
                     <div className={styles.subElectrodeBox}>
@@ -81,13 +93,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.cathode.activeMaterial.mass} g
+                                    Mass: {Stack.cathode.activeMaterial.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.cathode.activeMaterial.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.cathode.activeMaterial.thickness} µm
+                                    Thickness: {Stack.cathode.activeMaterial.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.cathode.activeMaterial.density.toExponential()} g/m3
@@ -117,13 +129,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.cathode.binder.mass} g
+                                    Mass: {Stack.cathode.binder.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.cathode.binder.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.cathode.binder.thickness} µm
+                                    Thickness: {Stack.cathode.binder.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.cathode.binder.density.toExponential()} µm
@@ -149,13 +161,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.cathode.conductiveAdditive.mass} g
+                                    Mass: {Stack.cathode.conductiveAdditive.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.cathode.conductiveAdditive.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.cathode.conductiveAdditive.thickness} µm
+                                    Thickness: {Stack.cathode.conductiveAdditive.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.cathode.conductiveAdditive.density.toExponential()} µm
@@ -181,10 +193,10 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.cathode.electrolyte.mass} g
+                                    Mass: {Stack.cathode.electrolyte.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.cathode.electrolyte.thickness} µm
+                                    Thickness: {Stack.cathode.electrolyte.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.cathode.electrolyte.density.toExponential()} g/m3
@@ -231,13 +243,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.anode.activeMaterial.mass} g
+                                    Mass: {Stack.anode.activeMaterial.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.anode.activeMaterial.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.anode.activeMaterial.thickness} µm
+                                    Thickness: {Stack.anode.activeMaterial.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.anode.activeMaterial.density.toExponential()} g/m3
@@ -267,13 +279,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.anode.binder.mass} g
+                                    Mass: {Stack.anode.binder.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.anode.binder.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.anode.binder.thickness} µm
+                                    Thickness: {Stack.anode.binder.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.anode.binder.density.toExponential()} µm
@@ -299,13 +311,13 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.anode.conductiveAdditive.mass} g
+                                    Mass: {Stack.anode.conductiveAdditive.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Mass fraction dry slurry: {Stack.anode.conductiveAdditive.massPercentDrySlurry}
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.anode.conductiveAdditive.thickness} µm
+                                    Thickness: {Stack.anode.conductiveAdditive.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.anode.conductiveAdditive.density.toExponential()} µm
@@ -331,10 +343,10 @@ export function SubElectrode() {
                                     <div className="box-12">
 
                                     <div className={styles.subElectrodeData}>
-                                    Mass: {Stack.anode.electrolyte.mass} g
+                                    Mass: {Stack.anode.electrolyte.mass.toPrecision(precision)} g
                                     </div>
                                     <div className={styles.subElectrodeData}>
-                                    Thickness: {Stack.anode.electrolyte.thickness} µm
+                                    Thickness: {Stack.anode.electrolyte.thickness.toPrecision(precision)} µm
                                     </div>
                                     <div className={styles.subElectrodeData}>
                                     Density: {Stack.anode.electrolyte.density.toExponential()} g/m3
@@ -364,10 +376,10 @@ export function SubElectrode() {
                         <div className="box-row">
                         <div className="box-12">
                             <div className={styles.subElectrodeData}>
-                            Mass: {CCCMass} g
+                            Mass: {CCCMass.toPrecision(precision)} g
                             </div>
                             <div className={styles.subElectrodeData}>
-                            Thickness: {CCCThickness} µm
+                            Thickness: {CCCThickness.toPrecision(precision)} µm
                             </div>
                         </div>
 
@@ -410,10 +422,10 @@ export function SubElectrode() {
                         <div className="box-row">
                         <div className="box-12">
                             <div className={styles.subElectrodeData}>
-                            Mass: {ACCMass} g
+                            Mass: {ACCMass.toPrecision(precision)} g
                             </div>
                             <div className={styles.subElectrodeData}>
-                            Thickness: {ACCThickness} µm
+                            Thickness: {ACCThickness.toPrecision(precision)} µm
                             </div>
                         </div>
                         </div>
@@ -423,6 +435,7 @@ export function SubElectrode() {
 
                     </div>
             </div>
+            </div>
 
         )
     }
@@ -431,7 +444,7 @@ export function SubElectrode() {
   return (
         <div className="box-row">
         <div className='box-12'>
-            {subElectrodeRender()}
+            {subElectrodeRender(subElectrodeSection)}
         </div>
         </div>
   );

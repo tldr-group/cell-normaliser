@@ -131,6 +131,10 @@
   grid-column: 4 / span 6;
 }
 
+.box-4-offset-4{
+  grid-column: 5 / span 4;
+}
+
 .box-8-offset-2{
   grid-column: 3 / span 8;
 }
@@ -152,4 +156,8 @@
   [class^="box-"]{
     grid-column: span 12;
   }
+}
+
+.show{
+  display: inline !important;
 }

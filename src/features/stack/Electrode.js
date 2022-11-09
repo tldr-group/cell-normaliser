@@ -2,7 +2,9 @@ import { React, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   setAWetMass,
+  setCWetMass,
   setAThickness,
+  setCThickness,
   setDiameter,
   selectDiameter,
   selectActiveElectrode,
@@ -21,9 +23,7 @@ import {
   selectTotalAnodeMass,
   setTotalAnodeThickness,
   selectTotalAnodeThickness,
-  selectAvgVoltage,
   selectLowRateCapacity,
-  selectMeasuredCapacity,
   selectStack,
   selectACCThickness,
   setACCThickness,
@@ -33,11 +33,18 @@ import {
   setCAMThickness,
   setCBMass,
   setCBThickness,
+  setABMass,
+  setABThickness,
   setCCAMass,
   setCCAThickness,
+  setACAMass,
+  setACAThickness,
   setCEMass,
   setCEThickness,
-  setCPorosity
+  setCPorosity,
+  setAEMass,
+  setAEThickness,
+  setAPorosity
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -54,14 +61,13 @@ export function Electrode() {
   const TotalCathodeThickness = useSelector(selectTotalCathodeThickness)
   const TotalAnodeMass = useSelector(selectTotalAnodeMass)
   const TotalAnodeThickness = useSelector(selectTotalAnodeThickness)
-  const AverageVoltage = useSelector(selectAvgVoltage)
   const LowRateCapacity = useSelector(selectLowRateCapacity)
-  const MeasuredCapacity = useSelector(selectMeasuredCapacity)
   const Stack = useSelector(selectStack)
   const dispatch = useDispatch();
 
-  useEffect(() => 
-  updateCathode(), [Stack])
+  useEffect(() => {
+    updateCathode()
+    updateAnode()}, [Stack])
 
   function valueReturn (value) {
     if(Number(value) >=0){
@@ -92,13 +98,11 @@ export function Electrode() {
         var anodeAMMass = LRCap / (Stack.anode.activeMaterial.theoreticSpecificCapacity*1e3)
         var anodeBMass = Stack.anode.binder.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
         var anodeCAMass = Stack.anode.conductiveAdditive.massPercentDrySlurry * anodeAMMass / (1 - Stack.anode.binder.massPercentDrySlurry - Stack.anode.conductiveAdditive.massPercentDrySlurry)
-
         dispatch(setAAMMass(anodeAMMass))
 
         var anodeAMThickness = anodeAMMass *1e6 / (Stack.anode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var anodeBThickness = anodeBMass*1e6 / (Stack.anode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var anodeCAThickness = anodeCAMass*1e6 / (Stack.anode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
-
         dispatch(setAAMThickness(anodeAMThickness))
 
         var anodeThickness = (anodeAMThickness + anodeBThickness + anodeCAThickness) / (1 - Stack.anode.porosity)
@@ -124,8 +128,8 @@ export function Electrode() {
         var cathodeEThickness = Stack.cathode.porosity * cathodeThickness
         var cathodeEMass = cathodeEThickness*1e-6 * Stack.cathode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
         var cathodeMass = Number(cathodeAMMass+cathodeBMass+cathodeCAMass+cathodeEMass)
-        dispatch(setAThickness(cathodeThickness))
-        dispatch(setAWetMass(cathodeMass))
+        dispatch(setCThickness(cathodeThickness))
+        dispatch(setCWetMass(cathodeMass))
         dispatch(setTotalCathodeMass(cathodeMass+CCCMass))
         dispatch(setTotalCathodeThickness(cathodeThickness+CCCThickness))
     }
@@ -148,14 +152,42 @@ export function Electrode() {
     var thicknessCA = massCA*1e6 / (Stack.cathode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
     dispatch(setCCAThickness(thicknessCA))
     // Electrolyte
-    var thicknessE = TotalCathodeThickness - thicknessAM - thicknessB - thicknessCA
-    var porosity = thicknessE / TotalCathodeThickness
-    var massE = thicknessE * Stack.cathode.electrolyte.density * 0.25 * Math.PI * (Diameter * 1e-3) **2
+    var thicknessE = TotalCathodeThickness - CCCThickness - thicknessAM - thicknessB - thicknessCA
+    var porosity = thicknessE / (TotalCathodeThickness-CCCThickness)
+    var massE = thicknessE * 1e-6 * Stack.cathode.electrolyte.density * 0.25 * Math.PI * (Diameter * 1e-3) **2
     dispatch(setCEMass(massE))
     dispatch(setCEThickness(thicknessE))
     dispatch(setCPorosity(porosity))
 
+
   }
+
+  function updateAnode() {
+    // Active material
+    var massAM = LowRateCapacity * 1e-3 / Stack.anode.activeMaterial.theoreticSpecificCapacity
+    dispatch(setAAMMass(massAM))
+    var thicknessAM = massAM*1e6 / (Stack.anode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setAAMThickness(thicknessAM))
+    // Binder
+    var massB = massAM * (Stack.anode.binder.massPercentDrySlurry) / (Stack.anode.activeMaterial.massPercentDrySlurry)
+    dispatch(setABMass(massB))
+    var thicknessB = massB*1e6 / (Stack.anode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setABThickness(thicknessB))
+    // Conductive additive
+    var massCA = massAM * (Stack.anode.conductiveAdditive.massPercentDrySlurry) / (Stack.anode.activeMaterial.massPercentDrySlurry)
+    dispatch(setACAMass(massCA))
+    var thicknessCA = massCA*1e6 / (Stack.anode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3) **2)
+    dispatch(setACAThickness(thicknessCA))
+    // Electrolyte
+    var thicknessE = TotalAnodeThickness - ACCThickness - thicknessAM - thicknessB - thicknessCA
+    var porosity = thicknessE / (TotalAnodeThickness - ACCThickness)
+    var massE = thicknessE * 1e-6 * Stack.anode.electrolyte.density * 0.25 * Math.PI * (Diameter * 1e-3) **2
+    dispatch(setAEMass(massE))
+    dispatch(setAEThickness(thicknessE))
+    dispatch(setAPorosity(porosity))
+
+  }
+
     
         return(
             <div className="box-row">

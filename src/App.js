@@ -26,13 +26,15 @@ function App() {
             <Electrode />
             <SubElectrode />
         </div>
-        <div className='box-4 sticky'>
+        <div className='box-4'>
         <div className='box-row'>
         <div className='box-12'>
           <Stack />
         </div>
+        <div className='box-row'>
         <div className='box-12'>
           <Cell />
+          </div>
         </div>
         </div>
         </div>

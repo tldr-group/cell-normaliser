@@ -10,11 +10,21 @@
 .subElectrodeSection{
   background-color: rgba(98, 42, 42, 0.1);
   border-radius: 5px;
+  display: none;
   /* grid-column: 12; */
   /* display: grid; */
   /* grid-template-columns: repeat(12, 1fr); */
   grid-template-rows: 1fr;
   margin-top: 20px;
+}
+
+.moreBtn{
+  background-color: rgba(42, 98, 67, 0.1);
+  border-radius: 5px;
+}
+
+.moreBtn:hover{
+  cursor: pointer;
 }
 
 .cathode{

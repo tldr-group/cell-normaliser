@@ -74,15 +74,15 @@ const initialState = {
   },
   diameter: 10,
   averageVoltage: 3,
-  lowRateCapacity: 15, // mAh
-  measuredCapacity: 12, //mAh
-  arealEnergyDensity: 200,
-  totalCathodeMass: Number((27 * (0.25 * 100e-6 * Math.PI)).toPrecision(2)) + 30e-3,
-  totalCathodeThickness: 10 + 100,
-  totalAnodeMass: 22e-3 + 2.1e-3,
+  lowRateCapacity: 5, // mAh
+  measuredCapacity: 2, //mAh
+  totalCathodeMass: Number((27 * (0.25 * 100e-6 * Math.PI)).toPrecision(2)) + 30e-3, // Cathode wet mass + CCC mass
+  totalCathodeThickness: 10 + 100, // Cathode + CCC
+  totalAnodeMass: 22e-3 + 2.1e-3, // anode wet mas + ACC mass
   totalAnodeThickness: 10+100,
-  npRatio: 1.2,
+  npRatio: 1,
   activeElectrode: 'cathode',
+  showSubElectrode: false
 };
 
 export const stackSlice = createSlice({
@@ -208,6 +208,9 @@ export const stackSlice = createSlice({
     setAPorosity: (state, action) => {
       state.anode.porosity = action.payload;
     },
+    setShowSubelectrode: (state, action) => {
+      state.showSubElectrode = Boolean(action.payload);
+    },
   },
 });
 
@@ -220,7 +223,7 @@ export const { setCWetMass, setAWetMass, setCThickness, setAThickness,
                 setCBMass, setCBThickness, setABMass, setABThickness,
                 setCCAMass, setCCAThickness, setACAMass, setACAThickness,
                 setCEMass, setCEThickness, setAEMass, setAEThickness,
-                setCPorosity, setAPorosity } = stackSlice.actions;
+                setCPorosity, setAPorosity, setShowSubelectrode } = stackSlice.actions;
 
 
 export const selectCWetMass = (state) => state.stack.cathode.wetMass;
@@ -246,6 +249,7 @@ export const selectAvgVoltage = (state) => state.stack.averageVoltage;
 export const selectLowRateCapacity = (state) => state.stack.lowRateCapacity;
 export const selectMeasuredCapacity = (state) => state.stack.measuredCapacity;
 export const selectStack = (state) => state.stack
+export const selectShowSubElectrode = (state) => state.stack.showSubElectrode
 
 export const selectActiveElectrode = (state) => state.stack.activeElectrode;
 
