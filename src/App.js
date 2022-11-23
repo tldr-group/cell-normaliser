@@ -24,7 +24,7 @@ function App() {
           <div className='box-row'>
           <div className='box-8'>
             <Electrode />
-            <SubElectrode />
+            {/* <SubElectrode /> */}
         </div>
         <div className='box-4'>
         <div className='box-row'>
