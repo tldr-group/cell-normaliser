@@ -45,6 +45,14 @@
   grid-template-rows: 1fr;
 }
 
+.selector{
+  background-color: rgba(189, 189, 54, 0.1);
+  border-radius: 5px;
+  grid-column: span 6;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
+}
 
 .subElectrodeBox{
   background-color: rgba(61, 54, 189, 0.1);

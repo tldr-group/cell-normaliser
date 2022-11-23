@@ -81,7 +81,7 @@ const initialState = {
   totalAnodeMass: 22e-3 + 2.1e-3, // anode wet mas + ACC mass
   totalAnodeThickness: 10+100,
   npRatio: 1,
-  activeElectrode: 'cathode',
+  activeElectrode: 'none',
   showSubElectrode: false
 };
 

@@ -30,13 +30,11 @@ const subElectrodeSection = useRef(null);
   const precision = 4
 
   function toggleSubElectrode (ref){
-    console.log(ref.current)
     ref.current.classList.toggle('show')
     dispatch(setShowSubelectrode(!ShowSubElectrode))
   }
 
   function showDetails(){
-    console.log(ShowSubElectrode)
     if(ShowSubElectrode){
         return('Less')
     }
@@ -376,10 +374,10 @@ const subElectrodeSection = useRef(null);
                         <div className="box-row">
                         <div className="box-12">
                             <div className={styles.subElectrodeData}>
-                            Mass: {CCCMass.toPrecision(precision)} g
+                            Mass: {CCCMass} g
                             </div>
                             <div className={styles.subElectrodeData}>
-                            Thickness: {CCCThickness.toPrecision(precision)} µm
+                            Thickness: {CCCThickness} µm
                             </div>
                         </div>
 
