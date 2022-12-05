@@ -44,7 +44,12 @@ import {
   setCPorosity,
   setAEMass,
   setAEThickness,
-  setAPorosity
+  setAPorosity,
+  selectWetMassMode,
+  selectDryCathodeMass,
+  setDryCathodeMass,
+  setWetMassMode,
+  setCEDensity
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -63,11 +68,11 @@ export function Electrode() {
   const TotalAnodeThickness = useSelector(selectTotalAnodeThickness)
   const LowRateCapacity = useSelector(selectLowRateCapacity)
   const Stack = useSelector(selectStack)
+  const WetMassMode = useSelector(selectWetMassMode)
+  const DryCathodeMass = useSelector(selectDryCathodeMass)
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // updateCathode()
-    // updateAnode()
     syncElectrode()}, [Stack])
 
   function valueReturn (value) {
@@ -189,6 +194,70 @@ export function Electrode() {
 
   }
 
+  function wetMassBox (){
+    if (WetMassMode && ActiveElectrode=='cathode'){
+
+        return (
+            <div className="box-12-row-4">
+            <p className={styles.title}>
+            Wet cathode + current collector mass / g
+            </p>
+            <input
+            className={styles.button}
+            type='text'
+            aria-label="Set cathode wet mass"
+            value={String(valueReturn(TotalCathodeMass))}
+            onChange={(e) => dispatch(setTotalCathodeMass(e.target.value))}
+            onBlur={(e) => validate(e)}
+            >
+            </input>
+            </div>
+        )
+    }
+    else if(!WetMassMode && ActiveElectrode=='cathode'){
+        return(
+            <div className="box-12-row-4">
+            <p className={styles.title}>
+            Dry cathode + current collector mass / g
+            </p>
+            <input
+            className={styles.button}
+            type='text'
+            aria-label="Set cathode dry mass"
+            value={String(valueReturn(DryCathodeMass))}
+            onChange={(e) => dispatch(setDryCathodeMass(e.target.value))}
+            onBlur={(e) => validate(e)}
+            >
+            </input>
+            </div>
+        )
+    }
+  }
+
+  function wetMassModeButton(){
+    if (WetMassMode){
+        dispatch(setTotalCathodeMass(TotalCathodeMass))
+        return(
+            <div className="box-12-row-4">
+            <div className={styles.button} onClick={() => dispatch(setWetMassMode(!WetMassMode))}>
+                Don't know wet mass?
+            </div>
+            </div>
+        )
+    }
+    else{
+        dispatch(setDryCathodeMass(DryCathodeMass))
+        return(
+            <div className="box-12-row-4">
+            <div className={styles.button} onClick={() => dispatch(setWetMassMode(!WetMassMode))}>
+                Know wet mass?
+            </div>
+            </div>
+        )
+    }
+    
+  }
+
   if(ActiveElectrode == 'none'){
     return(
         <div className="box-row">
@@ -295,20 +364,8 @@ export function Electrode() {
             </input>
         </div>
 
-            <div className="box-12-row-4">
-            <p className={styles.title}>
-            Wet cathode + current collector mass / g
-            </p>
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set cathode wet mass"
-            value={String(valueReturn(TotalCathodeMass))}
-            onChange={(e) => dispatch(setTotalCathodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
+            {wetMassBox()}
+            {wetMassModeButton()}
 
         
         </div>
@@ -389,9 +446,12 @@ else if(ActiveElectrode == 'anode'){
         </div>
 
             <div className="box-12-row-4">
+                <div className='box-12'>
             <p className={styles.title}>
             Wet anode + current collector mass / g
             </p>
+            </div>
+            <div className='box-12'>
             <input
             className={styles.button}
             type='text'
@@ -401,6 +461,14 @@ else if(ActiveElectrode == 'anode'){
             onBlur={(e) => validate(e)}
             >
             </input>
+            </div>
+            <div className='box-row'>
+            <div className="box-4-offset-4">
+            <div className={styles.button}>
+                Don't know wet mass?
+            </div>
+            </div>
+            </div>
             </div>
 
         </div>
