@@ -49,7 +49,8 @@ import {
   selectDryCathodeMass,
   setDryCathodeMass,
   setWetMassMode,
-  setCEDensity
+  selectDryAnodeMass,
+  setDryAnodeMass
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -70,6 +71,7 @@ export function Electrode() {
   const Stack = useSelector(selectStack)
   const WetMassMode = useSelector(selectWetMassMode)
   const DryCathodeMass = useSelector(selectDryCathodeMass)
+  const DryAnodeMass = useSelector(selectDryAnodeMass)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -117,7 +119,6 @@ export function Electrode() {
         var anodeMass = Number(anodeAMMass+anodeBMass+anodeCAMass+anodeEMass)
 
         dispatch(setAThickness(anodeThickness))
-        dispatch(setAWetMass(anodeMass))
         dispatch(setTotalAnodeMass(anodeMass+ACCMass))
         dispatch(setTotalAnodeThickness(anodeThickness+ACCThickness))
     }
@@ -125,17 +126,19 @@ export function Electrode() {
         var cathodeAMMass = LRCap / (Stack.cathode.activeMaterial.theoreticSpecificCapacity*1e3)
         var cathodeBMass = Stack.cathode.binder.massPercentDrySlurry * cathodeAMMass / (1 - Stack.cathode.binder.massPercentDrySlurry - Stack.cathode.conductiveAdditive.massPercentDrySlurry)
         var cathodeCAMass = Stack.cathode.conductiveAdditive.massPercentDrySlurry * cathodeAMMass / (1 - Stack.cathode.binder.massPercentDrySlurry - Stack.cathode.conductiveAdditive.massPercentDrySlurry)
+        dispatch(setCAMMass(cathodeCAMass))
 
         var cathodeAMThickness = cathodeAMMass *1e6 / (Stack.cathode.activeMaterial.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var cathodeBThickness = cathodeBMass*1e6 / (Stack.cathode.binder.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
         var cathodeCAThickness = cathodeCAMass*1e6 / (Stack.cathode.conductiveAdditive.density * 0.25 * Math.PI * (Diameter * 1e-3)**2)
+        dispatch(setCAMThickness(cathodeAMThickness))
 
         var cathodeThickness = (cathodeAMThickness + cathodeBThickness + cathodeCAThickness) / (1 - Stack.cathode.porosity)
         var cathodeEThickness = Stack.cathode.porosity * cathodeThickness
         var cathodeEMass = cathodeEThickness*1e-6 * Stack.cathode.electrolyte.density * (0.25 * Math.PI * (Diameter *1e-3)**2)
         var cathodeMass = Number(cathodeAMMass+cathodeBMass+cathodeCAMass+cathodeEMass)
+
         dispatch(setCThickness(cathodeThickness))
-        dispatch(setCWetMass(cathodeMass))
         dispatch(setTotalCathodeMass(cathodeMass+CCCMass))
         dispatch(setTotalCathodeThickness(cathodeThickness+CCCThickness))
     }
@@ -194,69 +197,65 @@ export function Electrode() {
 
   }
 
-  function wetMassBox (){
-    if (WetMassMode && ActiveElectrode=='cathode'){
+  function wetMassDropdown(electrode){
+    return(
+    <div tabIndex={0} className='dropdown'>
+        <div className='dropdownBtn'>{WetMassMode+' '+electrode+' + current collector mass / g'}</div>
+        <div className='dropdownItems'>
+            {['Wet', 'Dry'].map(l => {
+                return(
+                <div className='dropdownItem' key={l} onClick={() => dispatch(setWetMassMode(l))}>
+                    {l}
+                </div>
+                )
+            })
+            }
+        
+            </div>
+    </div>
+    )
+  }
 
+  function wetMassBox (electrode){
+
+    if (electrode==='cathode'){
         return (
             <div className="box-12-row-4">
-            <p className={styles.title}>
-            Wet cathode + current collector mass / g
-            </p>
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set cathode wet mass"
-            value={String(valueReturn(TotalCathodeMass))}
-            onChange={(e) => dispatch(setTotalCathodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-        )
-    }
-    else if(!WetMassMode && ActiveElectrode=='cathode'){
-        return(
-            <div className="box-12-row-4">
-            <p className={styles.title}>
-            Dry cathode + current collector mass / g
-            </p>
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set cathode dry mass"
-            value={String(valueReturn(DryCathodeMass))}
-            onChange={(e) => dispatch(setDryCathodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-        )
-    }
-  }
+            
+            {wetMassDropdown(electrode)}
 
-  function wetMassModeButton(){
-    if (WetMassMode){
-        dispatch(setTotalCathodeMass(TotalCathodeMass))
-        return(
-            <div className="box-12-row-4">
-            <div className={styles.button} onClick={() => dispatch(setWetMassMode(!WetMassMode))}>
-                Don't know wet mass?
-            </div>
-            </div>
-        )
-    }
-    else{
-        dispatch(setDryCathodeMass(DryCathodeMass))
-        return(
-            <div className="box-12-row-4">
-            <div className={styles.button} onClick={() => dispatch(setWetMassMode(!WetMassMode))}>
-                Know wet mass?
-            </div>
+            <input
+            className={styles.button}
+            type='text'
+            aria-label="Set mass"
+            value={WetMassMode==='Wet' ? String(valueReturn(TotalCathodeMass)) : String(valueReturn(DryCathodeMass))}
+            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalCathodeMass(e.target.value) : setDryCathodeMass(e.target.value))}
+            onBlur={(e) => validate(e)}
+            >
+            </input>
             </div>
         )
     }
-    
-  }
+    else if (electrode==='anode'){
+        return (
+            <div className="box-12-row-4">
+            
+            {wetMassDropdown(electrode)}
+
+            <input
+            className={styles.button}
+            type='text'
+            aria-label="Set mass"
+            value={WetMassMode==='Wet' ? String(valueReturn(TotalAnodeMass)) : String(valueReturn(DryAnodeMass))}
+            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalAnodeMass(e.target.value) : setDryAnodeMass(e.target.value))}
+            onBlur={(e) => validate(e)}
+            >
+            </input>
+            </div>
+        )
+    }
+    }
+
 
   if(ActiveElectrode == 'none'){
     return(
@@ -364,8 +363,7 @@ export function Electrode() {
             </input>
         </div>
 
-            {wetMassBox()}
-            {wetMassModeButton()}
+            {wetMassBox(ActiveElectrode)}
 
         
         </div>
@@ -445,31 +443,7 @@ else if(ActiveElectrode == 'anode'){
             </input>
         </div>
 
-            <div className="box-12-row-4">
-                <div className='box-12'>
-            <p className={styles.title}>
-            Wet anode + current collector mass / g
-            </p>
-            </div>
-            <div className='box-12'>
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set anode wet mass"
-            value={String(valueReturn(TotalAnodeMass))}
-            onChange={(e) => dispatch(setTotalAnodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-            <div className='box-row'>
-            <div className="box-4-offset-4">
-            <div className={styles.button}>
-                Don't know wet mass?
-            </div>
-            </div>
-            </div>
-            </div>
+        {wetMassBox(ActiveElectrode)}
 
         </div>
     </div>
@@ -549,20 +523,7 @@ else if(ActiveElectrode == 'anode'){
                 </input>
             </div>
 
-                <div className="box-12-row-4">
-                <p className={styles.title}>
-                Wet cathode + current collector mass / g
-                </p>
-                <input
-                className={styles.button}
-                type='text'
-                aria-label="Set cathode wet mass"
-                value={String(valueReturn(TotalCathodeMass))}
-                onChange={(e) => dispatch(setTotalCathodeMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-                >
-                </input>
-                </div>
+            {wetMassBox('cathode')}
 
             </div>
         </div>
@@ -634,20 +595,7 @@ else if(ActiveElectrode == 'anode'){
                 </input>
             </div>
 
-                <div className="box-12-row-4">
-                <p className={styles.title}>
-                Wet anode + current collector mass / g
-                </p>
-                <input
-                className={styles.button}
-                type='text'
-                aria-label="Set anode wet mass"
-                value={String(valueReturn(TotalAnodeMass))}
-                onChange={(e) => dispatch(setTotalAnodeMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-                >
-                </input>
-                </div>
+            {wetMassBox('anode')}
 
             </div>
         </div>

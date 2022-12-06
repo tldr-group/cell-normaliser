@@ -129,12 +129,12 @@ export function Cell() {
                     <p className={styles.title}>
                         Cell
                     </p>
-                    <div tabindex={0} className={styles.dropdown}>
-                        <div className={styles.dropdownBtn}>{ActiveCellType}</div>
-                        <div className={styles.dropdownItems}>
+                    <div tabIndex={0} className='dropdown'>
+                        <div className='dropdownBtn'>{ActiveCellType}</div>
+                        <div className='dropdownItems'>
                           {Object.keys(Cell.cells).map(l => {
                               return(
-                                <div className={styles.dropdownItem} onClick={() => setCellType(l, Cell.cells[l])}>
+                                <div className='dropdownItem' key={l} onClick={() => setCellType(l, Cell.cells[l])}>
                                   {l}
                                 </div>
                               )
