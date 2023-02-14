@@ -27,8 +27,9 @@ export function Stack() {
 
   return (
     <div>
-      <div className="container">
-        <div className={styles.electrodeSection}>
+      <div className='container'>
+      <div className="box-12">
+      <div className={styles.electrodeSection}>
       <div className='box-row'>
       <div className="box-12">
       <p className={styles.title}>
@@ -79,6 +80,7 @@ export function Stack() {
             
             </div>
       
+    </div>
     </div>
     </div>
     </div>

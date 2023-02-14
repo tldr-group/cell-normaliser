@@ -1,10 +1,13 @@
 .resultsSection{
-    background-color: rgba(46, 75, 180, 0.291);
-    margin-top: 20px;
+    background-color: var(--blue);
+    color: var(--black);
     margin-bottom: 20px;
     border: 2px solid transparent;
     border-radius: 5px;
     align-self: center;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .title{
@@ -25,7 +28,7 @@
 
 .result{
     font-size: 18px;
-    background-color: rgba(46, 75, 180, 0.291);
+    background-color: rgba(255, 255, 255, 0.149);
     border: 2px solid transparent;
     border-radius: 5px;
     margin-top: 5px;

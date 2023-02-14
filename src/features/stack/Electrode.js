@@ -42,9 +42,11 @@ import {
   setCEMass,
   setCEThickness,
   setCPorosity,
+  selectCPorosity,
   setAEMass,
   setAEThickness,
   setAPorosity,
+  selectAPorosity,
   selectWetMassMode,
   selectDryCathodeMass,
   setDryCathodeMass,
@@ -72,6 +74,8 @@ export function Electrode() {
   const WetMassMode = useSelector(selectWetMassMode)
   const DryCathodeMass = useSelector(selectDryCathodeMass)
   const DryAnodeMass = useSelector(selectDryAnodeMass)
+  const CPorosity = useSelector(selectCPorosity)
+  const APorosity = useSelector(selectAPorosity)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -220,10 +224,11 @@ export function Electrode() {
 
     if (electrode==='cathode'){
         return (
-            <div className="box-12-row-4">
-            
+            <div className="box-row">
+            <div className="box-12">
             {wetMassDropdown(electrode)}
-
+            </div>
+            <div className="box-12">
             <input
             className={styles.button}
             type='text'
@@ -234,14 +239,28 @@ export function Electrode() {
             >
             </input>
             </div>
+            <div className="box-12">
+            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
+            Porosity
+            </p>
+            <input 
+            className={styles.button}
+            value={String(valueReturn(CPorosity))}
+            onChange={(e) => dispatch(setCPorosity(e.target.value))}
+            hidden={WetMassMode==='Wet' ? true : ''}>
+            </input>
+            </div>
+            </div>
         )
     }
     else if (electrode==='anode'){
         return (
-            <div className="box-12-row-4">
+            <div className="box-row">
+            <div className="box-12">
             
             {wetMassDropdown(electrode)}
-
+            </div>
+            <div className="box-12">
             <input
             className={styles.button}
             type='text'
@@ -251,6 +270,18 @@ export function Electrode() {
             onBlur={(e) => validate(e)}
             >
             </input>
+            </div>
+            <div className="box-12">
+            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
+            Porosity
+            </p>
+            <input 
+            className={styles.button}
+            value={String(valueReturn(APorosity))}
+            onChange={(e) => dispatch(setAPorosity(e.target.value))}
+            hidden={WetMassMode==='Wet' ? true : ''}>
+            </input>
+            </div>
             </div>
         )
     }
