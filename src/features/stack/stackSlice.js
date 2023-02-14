@@ -210,9 +210,13 @@ export const stackSlice = createSlice({
     },
     setCPorosity: (state, action) => {
       state.cathode.porosity = action.payload;
+      state.cathode.wetMass = state.dryCathodeMass - state.cathodeCC.mass + Number(state.cathode.electrolyte.density) * Number(state.cathode.porosity) * Number(state.area * (1e-3)**2) * Number(state.cathode.thickness * 1e-6)
+      state.totalCathodeMass = Number(state.cathode.wetMass.toPrecision(3)) + Number(state.cathodeCC.mass)
     },
     setAPorosity: (state, action) => {
       state.anode.porosity = action.payload;
+      state.anode.wetMass = state.dryAnodeMass - state.anodeCC.mass + Number(state.anode.electrolyte.density) * Number(state.anode.porosity) * Number(state.area * (1e-3)**2) * Number(state.anode.thickness * 1e-6)
+      state.totalAnodeMass = Number(state.anode.wetMass.toPrecision(3)) + Number(state.anodeCC.mass)
     },
     setShowSubelectrode: (state, action) => {
       state.showSubElectrode = Boolean(action.payload);
@@ -273,6 +277,9 @@ export const selectShowSubElectrode = (state) => state.stack.showSubElectrode
 export const selectWetMassMode = (state) => state.stack.wetMassMode
 export const selectDryCathodeMass = (state) => state.stack.dryCathodeMass
 export const selectDryAnodeMass = (state) => state.stack.dryAnodeMass
+
+export const selectCPorosity = (state) => state.stack.cathode.porosity
+export const selectAPorosity = (state) => state.stack.anode.porosity
 
 export const selectActiveElectrode = (state) => state.stack.activeElectrode;
 

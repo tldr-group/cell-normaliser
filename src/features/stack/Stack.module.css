@@ -1,10 +1,12 @@
 .electrodeSection{
-  background-color: rgba(189, 54, 54, 0.1);
-  border-radius: 5px;
-  grid-column: 12;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 1fr;
+    background-color: var(--blue);
+    margin-bottom: 20px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    align-self: center;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .subElectrodeSection{
@@ -28,30 +30,39 @@
 }
 
 .cathode{
-  background-color: rgba(54, 189, 81, 0.1);
+  background-color: var(--blue);
   border-radius: 5px;
   grid-column: span 6;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 1fr;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .anode{
-  background-color: rgba(61, 54, 189, 0.1);
+  background-color: var(--blue);
   border-radius: 5px;
   grid-column: span 6;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 1fr;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .selector{
-  background-color: rgba(189, 189, 54, 0.1);
+  background-color: var(--blue);
   border-radius: 5px;
   grid-column: span 6;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 1fr;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .subElectrodeBox{
@@ -103,7 +114,7 @@
   transition: all 0.15s;
 }
 .button:hover{
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.55);
 }
 
 .button:active {
