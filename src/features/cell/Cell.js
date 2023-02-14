@@ -5,7 +5,7 @@ import {
   selectAWetMass,
   selectCThickness,
   selectAThickness,
-  selectDiameter,
+  selectArea,
   selectACCMass,
   selectACCThickness,
   selectCCCMass,
@@ -42,7 +42,7 @@ export function Cell() {
   const CThickness = Number(useSelector(selectCThickness));
   const AWetMass = Number(useSelector(selectAWetMass));
   const AThickness = Number(useSelector(selectAThickness));
-  const Diameter = Number(useSelector(selectDiameter));
+  const Area = Number(useSelector(selectArea));
   const ACCMass = Number(useSelector(selectACCMass));
   const ACCThickness = Number(useSelector(selectACCThickness));
   const CCCMass = Number(useSelector(selectCCCMass));
@@ -64,8 +64,8 @@ export function Cell() {
   const dispatch = useDispatch();
 
 
-  function massToMassLoading(mass, diameter){
-    return mass / ( 0.25 * Math.PI * (diameter*1e-3)**2) // g m-2
+  function massToMassLoading(mass, area){
+    return mass / ( area*(1e-3)**2) // g m-2
   }
 
   function stackThickness(anodeThickness, cathodeThickness, separatorThickness, ACCThickness, CCCThickness){
@@ -80,8 +80,8 @@ export function Cell() {
     return caseInternalVolume / stackThickness
   }
 
-  function arealEnergyDensity(avgVoltage, measuredCapacity, diameter){
-    return avgVoltage * measuredCapacity * 1e-3 / (0.25 * Math.PI * (diameter * 1e-3) **2) // Wh
+  function arealEnergyDensity(avgVoltage, measuredCapacity, area){
+    return avgVoltage * measuredCapacity * 1e-3 / (area * (1e-3)**2) // Wh
   }
 
   function setCellType(cellType, caseObj){
@@ -91,16 +91,16 @@ export function Cell() {
 
   function calcEnergy(){
     // 2 * stackArea * arealEnergyDensity
-    var AnodeMassLoading = massToMassLoading(AWetMass, Diameter) // g m-2
-    var CathodeMassLoading = massToMassLoading(CWetMass, Diameter)
-    var ACCMassLoading = massToMassLoading(ACCMass, Diameter)
-    var CCCMassLoading = massToMassLoading(CCCMass, Diameter)
+    var AnodeMassLoading = massToMassLoading(AWetMass, Area) // g m-2
+    var CathodeMassLoading = massToMassLoading(CWetMass, Area)
+    var ACCMassLoading = massToMassLoading(ACCMass, Area)
+    var CCCMassLoading = massToMassLoading(CCCMass, Area)
     var StackThickness = stackThickness(AThickness, CThickness, SThickness, ACCThickness, CCCThickness) // m
     var StackMassLoading = massLoading(AnodeMassLoading, CathodeMassLoading, SMassLoading, ACCMassLoading, CCCMassLoading)
     var StackArea = stackArea(CaseInternalVolume, StackThickness) // m2
-    var energyDensity = arealEnergyDensity(AvgVoltage, MeasuredCapacity, Diameter)  // Wh m-2
+    var energyDensity = arealEnergyDensity(AvgVoltage, MeasuredCapacity, Area)  // Wh m-2
     var energy = StackArea * energyDensity  // Wh
-    var theoreticEnergy = StackArea * arealEnergyDensity(AvgVoltage, LowRateCapacity, Diameter)
+    var theoreticEnergy = StackArea * arealEnergyDensity(AvgVoltage, LowRateCapacity, Area)
     var mass = CaseMass + StackArea * StackMassLoading // g
     var specificEnergy = 2 * StackArea * energyDensity * 1000 / ( CaseMass + StackArea * StackMassLoading ) // Wh kg-1
     dispatch(setEDensity(energyDensity))
