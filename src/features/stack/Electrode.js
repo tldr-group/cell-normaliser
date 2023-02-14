@@ -257,7 +257,7 @@ export function Electrode() {
     }
 
 
-  if(ActiveElectrode == 'none'){
+  if(ActiveElectrode === 'none'){
     return(
         <div className="box-row">
             <div className="box-12">
@@ -296,7 +296,7 @@ export function Electrode() {
 
 //   CATHODE HALF CELL
 
-  else if(ActiveElectrode == 'cathode'){
+  else if(ActiveElectrode === 'cathode'){
     return(
         <div className="box-row">
         <div className="box-12">
@@ -375,7 +375,7 @@ export function Electrode() {
 
 // ANODE HALF CELL
 
-else if(ActiveElectrode == 'anode'){
+else if(ActiveElectrode === 'anode'){
     return(
         <div className="box-row">
         <div className="box-12">
@@ -456,7 +456,7 @@ else if(ActiveElectrode == 'anode'){
 
 // FULL CELL
 
-  else if(ActiveElectrode == 'both'){
+  else if(ActiveElectrode === 'both'){
         return(
             <div className="box-row">
             <div className="box-6">
