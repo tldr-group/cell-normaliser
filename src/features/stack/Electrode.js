@@ -1,8 +1,8 @@
 import { React, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { WetMassBox } from './components/wetMassBox';
+import { valueReturn, validate } from './stackFunctions';
 import {
-  setAWetMass,
-  setCWetMass,
   setAThickness,
   setCThickness,
   setArea,
@@ -16,11 +16,9 @@ import {
   selectACCMass,
   setACCMass,
   setTotalCathodeMass,
-  selectTotalCathodeMass,
   setTotalCathodeThickness,
   selectTotalCathodeThickness,
   setTotalAnodeMass,
-  selectTotalAnodeMass,
   setTotalAnodeThickness,
   selectTotalAnodeThickness,
   selectLowRateCapacity,
@@ -31,28 +29,6 @@ import {
   setAAMThickness,
   setCAMMass,
   setCAMThickness,
-  setCBMass,
-  setCBThickness,
-  setABMass,
-  setABThickness,
-  setCCAMass,
-  setCCAThickness,
-  setACAMass,
-  setACAThickness,
-  setCEMass,
-  setCEThickness,
-  setCPorosity,
-  selectCPorosity,
-  setAEMass,
-  setAEThickness,
-  setAPorosity,
-  selectAPorosity,
-  selectWetMassMode,
-  selectDryCathodeMass,
-  setDryCathodeMass,
-  setWetMassMode,
-  selectDryAnodeMass,
-  setDryAnodeMass
 } from './stackSlice';
 
 import styles from './Stack.module.css';
@@ -65,44 +41,14 @@ export function Electrode() {
   const CCCMass = useSelector(selectCCCMass);
   const ACCMass = useSelector(selectACCMass);
   const ACCThickness = useSelector(selectACCThickness);
-  const TotalCathodeMass = useSelector(selectTotalCathodeMass)
   const TotalCathodeThickness = useSelector(selectTotalCathodeThickness)
-  const TotalAnodeMass = useSelector(selectTotalAnodeMass)
   const TotalAnodeThickness = useSelector(selectTotalAnodeThickness)
   const LowRateCapacity = useSelector(selectLowRateCapacity)
   const Stack = useSelector(selectStack)
-  const WetMassMode = useSelector(selectWetMassMode)
-  const DryCathodeMass = useSelector(selectDryCathodeMass)
-  const DryAnodeMass = useSelector(selectDryAnodeMass)
-  const CPorosity = useSelector(selectCPorosity)
-  const APorosity = useSelector(selectAPorosity)
   const dispatch = useDispatch();
 
   useEffect(() => {
     syncElectrode()}, [Stack])
-
-  function valueReturn (value) {
-    if(Number(value) >=0){
-      return value
-    }
-    else{
-      return ''
-    }
-  }
-
-  function validate(e){
-    // Total thickness > ccc thickness
-    e.target.classList.toggle("invalid");
-    if( TotalCathodeThickness-CCCThickness<0){
-        e.target.classList.add("invalid");
-    }
-    else if( TotalCathodeMass-CCCMass<0){
-        e.target.classList.add("invalid");
-    }
-    else{
-        e.target.classList.remove("invalid");
-    }
-  }
 
   function syncElectrode(){
     var LRCap = Stack.npRatio * LowRateCapacity
@@ -147,145 +93,6 @@ export function Electrode() {
         dispatch(setTotalCathodeThickness(cathodeThickness+CCCThickness))
     }
   }
-
-  function updateCathode() {
-    // Active material
-    var massAM = LowRateCapacity * 1e-3 / Stack.cathode.activeMaterial.theoreticSpecificCapacity
-    dispatch(setCAMMass(massAM))
-    var thicknessAM = massAM*1e6 / (Stack.cathode.activeMaterial.density * (Area * (1e-3)**2))
-    dispatch(setCAMThickness(thicknessAM))
-    // Binder
-    var massB = massAM * (Stack.cathode.binder.massPercentDrySlurry) / (Stack.cathode.activeMaterial.massPercentDrySlurry)
-    dispatch(setCBMass(massB))
-    var thicknessB = massB*1e6 / (Stack.cathode.binder.density * (Area * (1e-3)**2))
-    dispatch(setCBThickness(thicknessB))
-    // Conductive additive
-    var massCA = massAM * (Stack.cathode.conductiveAdditive.massPercentDrySlurry) / (Stack.cathode.activeMaterial.massPercentDrySlurry)
-    dispatch(setCCAMass(massCA))
-    var thicknessCA = massCA*1e6 / (Stack.cathode.conductiveAdditive.density * (Area * (1e-3)**2))
-    dispatch(setCCAThickness(thicknessCA))
-    // Electrolyte
-    var thicknessE = TotalCathodeThickness - CCCThickness - thicknessAM - thicknessB - thicknessCA
-    var porosity = thicknessE / (TotalCathodeThickness-CCCThickness)
-    var massE = thicknessE * 1e-6 * Stack.cathode.electrolyte.density * (Area * (1e-3)**2)
-    dispatch(setCEMass(massE))
-    dispatch(setCEThickness(thicknessE))
-    dispatch(setCPorosity(porosity))
-
-
-  }
-
-  function updateAnode() {
-    // Active material
-    var massAM = LowRateCapacity * 1e-3 / Stack.anode.activeMaterial.theoreticSpecificCapacity
-    dispatch(setAAMMass(massAM))
-    var thicknessAM = massAM*1e6 / (Stack.anode.activeMaterial.density * (Area * (1e-3)**2))
-    dispatch(setAAMThickness(thicknessAM))
-    // Binder
-    var massB = massAM * (Stack.anode.binder.massPercentDrySlurry) / (Stack.anode.activeMaterial.massPercentDrySlurry)
-    dispatch(setABMass(massB))
-    var thicknessB = massB*1e6 / (Stack.anode.binder.density * 0.25 * Math.PI * (Area * (1e-3)**2))
-    dispatch(setABThickness(thicknessB))
-    // Conductive additive
-    var massCA = massAM * (Stack.anode.conductiveAdditive.massPercentDrySlurry) / (Stack.anode.activeMaterial.massPercentDrySlurry)
-    dispatch(setACAMass(massCA))
-    var thicknessCA = massCA*1e6 / (Stack.anode.conductiveAdditive.density * (Area * (1e-3)**2))
-    dispatch(setACAThickness(thicknessCA))
-    // Electrolyte
-    var thicknessE = TotalAnodeThickness - ACCThickness - thicknessAM - thicknessB - thicknessCA
-    var porosity = thicknessE / (TotalAnodeThickness - ACCThickness)
-    var massE = thicknessE * 1e-6 * Stack.anode.electrolyte.density * (Area * (1e-3)**2)
-    dispatch(setAEMass(massE))
-    dispatch(setAEThickness(thicknessE))
-    dispatch(setAPorosity(porosity))
-
-  }
-
-  function wetMassDropdown(electrode){
-    return(
-    <div tabIndex={0} className='dropdown'>
-        <div className='dropdownBtn'>{WetMassMode+' '+electrode+' + current collector mass / g'}</div>
-        <div className='dropdownItems'>
-            {['Wet', 'Dry'].map(l => {
-                return(
-                <div className='dropdownItem' key={l} onClick={() => dispatch(setWetMassMode(l))}>
-                    {l}
-                </div>
-                )
-            })
-            }
-        
-            </div>
-    </div>
-    )
-  }
-
-  function wetMassBox (electrode){
-
-    if (electrode==='cathode'){
-        return (
-            <div className="box-row">
-            <div className="box-12">
-            {wetMassDropdown(electrode)}
-            </div>
-            <div className="box-12">
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set mass"
-            value={WetMassMode==='Wet' ? String(valueReturn(TotalCathodeMass)) : String(valueReturn(DryCathodeMass))}
-            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalCathodeMass(e.target.value) : setDryCathodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-            <div className="box-12">
-            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
-            Porosity
-            </p>
-            <input 
-            className={styles.button}
-            value={String(valueReturn(CPorosity))}
-            onChange={(e) => dispatch(setCPorosity(e.target.value))}
-            hidden={WetMassMode==='Wet' ? true : ''}>
-            </input>
-            </div>
-            </div>
-        )
-    }
-    else if (electrode==='anode'){
-        return (
-            <div className="box-row">
-            <div className="box-12">
-            
-            {wetMassDropdown(electrode)}
-            </div>
-            <div className="box-12">
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set mass"
-            value={WetMassMode==='Wet' ? String(valueReturn(TotalAnodeMass)) : String(valueReturn(DryAnodeMass))}
-            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalAnodeMass(e.target.value) : setDryAnodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-            <div className="box-12">
-            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
-            Porosity
-            </p>
-            <input 
-            className={styles.button}
-            value={String(valueReturn(APorosity))}
-            onChange={(e) => dispatch(setAPorosity(e.target.value))}
-            hidden={WetMassMode==='Wet' ? true : ''}>
-            </input>
-            </div>
-            </div>
-        )
-    }
-    }
 
 
   if(ActiveElectrode === 'none'){
@@ -394,7 +201,7 @@ export function Electrode() {
             </input>
         </div>
 
-            {wetMassBox(ActiveElectrode)}
+        <WetMassBox electrode={ActiveElectrode} />
 
         
         </div>
@@ -474,7 +281,7 @@ else if(ActiveElectrode === 'anode'){
             </input>
         </div>
 
-        {wetMassBox(ActiveElectrode)}
+        <WetMassBox electrode={ActiveElectrode}/>
 
         </div>
     </div>
@@ -554,7 +361,7 @@ else if(ActiveElectrode === 'anode'){
                 </input>
             </div>
 
-            {wetMassBox('cathode')}
+            <WetMassBox electrode='cathode'/>
 
             </div>
         </div>
@@ -626,7 +433,7 @@ else if(ActiveElectrode === 'anode'){
                 </input>
             </div>
 
-            {wetMassBox('anode')}
+            <WetMassBox electrode='anode'/>
 
             </div>
         </div>

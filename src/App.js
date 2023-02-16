@@ -1,9 +1,7 @@
 import React from 'react';
 import { Electrode } from './features/stack/Electrode';
-import { SubElectrode } from './features/stack/SubElectrode';
 import { Stack } from './features/stack/Stack';
 import { Cell } from './features/cell/Cell';
-// import { Visual } from './features/visual/Visual';
 import './App.css';
 
 function App() {

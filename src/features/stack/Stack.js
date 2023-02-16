@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './Stack.module.css';
+import {valueReturn} from './stackFunctions'
 import './../../App.css'
 import {
   selectLowRateCapacity,
@@ -16,14 +17,6 @@ export function Stack() {
   const LowRateCapacity = useSelector(selectLowRateCapacity)
   const dispatch = useDispatch();
 
-  function valueReturn (value) {
-    if(Number(value) >=0){
-      return value
-    }
-    else{
-      return ''
-    }
-  }
 
   return (
     <div>
