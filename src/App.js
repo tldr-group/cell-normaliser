@@ -21,21 +21,19 @@ function App() {
           </div>
           </div>
         </div>
+        <div className='box-row'>
+        <div className='box-12'>
           <div className='box-row'>
-          <div className='box-8'>
+          <div className='box-6'>
             <Electrode />
             {/* <SubElectrode /> */}
         </div>
-        <div className='box-4'>
-        <div className='box-row'>
-        <div className='box-12'>
+        <div className='box-3'>
           <Stack />
         </div>
-        <div className='box-row'>
-        <div className='box-12'>
+        <div className='box-3'>
           <Cell />
           </div>
-        </div>
         </div>
         </div>
         </div>

@@ -72,8 +72,8 @@ const initialState = {
     mass: 2.1e-3,
     thickness: 10, // in µm
   },
-  diameter: 10,
-  averageVoltage: 3.2, // V
+  area: (10**2 *1/4 * Math.PI).toPrecision(4),
+  averageVoltage: 3,
   lowRateCapacity: 5, // mAh
   measuredCapacity: 2, //mAh
   totalCathodeMass: Number((27 * (0.25 * 100e-6 * Math.PI)).toPrecision(2)) + 30e-3, // Cathode wet mass + CCC mass
@@ -104,8 +104,8 @@ export const stackSlice = createSlice({
     setAThickness: (state, action) => {
       state.anode.thickness = action.payload;
     },
-    setDiameter: (state, action) => {
-      state.diameter = action.payload;
+    setArea: (state, action) => {
+        state.area = action.payload;
     },
     setArealEnergyDensity: (state, action) => {
       state.arealEnergyDensity = action.payload;
@@ -118,14 +118,14 @@ export const stackSlice = createSlice({
     },
     setCCCMass: (state, action) => {
       state.cathodeCC.mass = action.payload;
-      state.cathodeCC.massLoading = action.payload / (0.25 * (state.cathode.diameter * 1e-3) ** 2 * Math.PI);
+      state.cathodeCC.massLoading = action.payload / (state.cathode.area*(1e-3)**2);
     },
     setACCThickness: (state, action) => {
       state.anodeCC.thickness = action.payload;
     },
     setACCMass: (state, action) => {
       state.anodeCC.mass = action.payload;
-      state.anodeCC.massLoading = action.payload / (0.25 * (state.anode.diameter * 1e-3) ** 2 * Math.PI);
+      state.anodeCC.massLoading = action.payload / (state.cathode.area*(1e-3)**2);
     },
     setTotalCathodeMass: (state, action) => {
       state.totalCathodeMass = action.payload;
@@ -210,9 +210,13 @@ export const stackSlice = createSlice({
     },
     setCPorosity: (state, action) => {
       state.cathode.porosity = action.payload;
+      state.cathode.wetMass = state.dryCathodeMass - state.cathodeCC.mass + Number(state.cathode.electrolyte.density) * Number(state.cathode.porosity) * Number(state.area * (1e-3)**2) * Number(state.cathode.thickness * 1e-6)
+      state.totalCathodeMass = Number(state.cathode.wetMass.toPrecision(3)) + Number(state.cathodeCC.mass)
     },
     setAPorosity: (state, action) => {
       state.anode.porosity = action.payload;
+      state.anode.wetMass = state.dryAnodeMass - state.anodeCC.mass + Number(state.anode.electrolyte.density) * Number(state.anode.porosity) * Number(state.area * (1e-3)**2) * Number(state.anode.thickness * 1e-6)
+      state.totalAnodeMass = Number(state.anode.wetMass.toPrecision(3)) + Number(state.anodeCC.mass)
     },
     setShowSubelectrode: (state, action) => {
       state.showSubElectrode = Boolean(action.payload);
@@ -222,35 +226,35 @@ export const stackSlice = createSlice({
     },
     setDryCathodeMass: (state, action) => {
       state.dryCathodeMass = action.payload;
-      state.cathode.wetMass = Number(action.payload) - state.cathodeCC.mass + Number(state.cathode.electrolyte.density) * Number(state.cathode.porosity) * Math.PI * 0.25 * Number(state.diameter * 1e-3) ** 2 * Number(state.cathode.thickness * 1e-6)
+      state.cathode.wetMass = Number(action.payload) - state.cathodeCC.mass + Number(state.cathode.electrolyte.density) * Number(state.cathode.porosity) * Number(state.area * (1e-3)**2) * Number(state.cathode.thickness * 1e-6)
       state.totalCathodeMass = Number(state.cathode.wetMass.toPrecision(3)) + Number(state.cathodeCC.mass)
     },
     setDryAnodeMass: (state, action) => {
       state.dryAnodeMass = action.payload;
-      state.anode.wetMass = Number(action.payload) - state.anodeCC.mass + Number(state.anode.electrolyte.density) * Number(state.anode.porosity) * Math.PI * 0.25 * Number(state.diameter * 1e-3) ** 2 * Number(state.anode.thickness * 1e-6)
+      state.anode.wetMass = Number(action.payload) - state.anodeCC.mass + Number(state.anode.electrolyte.density) * Number(state.anode.porosity) * Number(state.area * (1e-3)**2) * Number(state.anode.thickness * 1e-6)
       state.totalAnodeMass = Number(state.anode.wetMass.toPrecision(3)) + Number(state.anodeCC.mass)
     },
   },
 });
 
 export const { setCWetMass, setAWetMass, setCThickness, setAThickness,
-  setDiameter, setArealEnergyDensity, setActiveElectrode,
-  setCCCThickness, setCCCMass, setTotalCathodeMass, setTotalCathodeThickness,
-  setAvgVoltage, setLowRateCapacity, setMeasuredCapacity, setACCMass,
-  setACCThickness, setTotalAnodeMass, setTotalAnodeThickness,
-  setCAMMass, setCAMThickness, setAAMMass, setAAMThickness,
-  setCBMass, setCBThickness, setABMass, setABThickness,
-  setCCAMass, setCCAThickness, setACAMass, setACAThickness,
-  setCEMass, setCEThickness, setAEMass, setAEThickness,
-  setCPorosity, setAPorosity, setShowSubelectrode, setDryCathodeMass,
-  setWetMassMode, setCEDensity, setDryAnodeMass } = stackSlice.actions;
+                setArea, setArealEnergyDensity, setActiveElectrode,
+                setCCCThickness, setCCCMass, setTotalCathodeMass, setTotalCathodeThickness,
+                setAvgVoltage, setLowRateCapacity, setMeasuredCapacity, setACCMass,
+                setACCThickness, setTotalAnodeMass, setTotalAnodeThickness,
+                setCAMMass, setCAMThickness, setAAMMass, setAAMThickness,
+                setCBMass, setCBThickness, setABMass, setABThickness,
+                setCCAMass, setCCAThickness, setACAMass, setACAThickness,
+                setCEMass, setCEThickness, setAEMass, setAEThickness,
+                setCPorosity, setAPorosity, setShowSubelectrode, setDryCathodeMass,
+                setWetMassMode, setCEDensity, setDryAnodeMass } = stackSlice.actions;
 
 
 export const selectCWetMass = (state) => state.stack.cathode.wetMass;
 export const selectAWetMass = (state) => state.stack.anode.wetMass;
 export const selectCThickness = (state) => state.stack.cathode.thickness;
 export const selectAThickness = (state) => state.stack.anode.thickness;
-export const selectDiameter = (state) => state.stack.diameter;
+export const selectArea = (state) => state.stack.area;
 export const selectArealEnergyDensity = (state) => state.stack.arealEnergyDensity;
 export const selectSMassLoading = (state) => state.stack.separator.massLoading;
 export const selectSThickness = (state) => state.stack.separator.thickness;
@@ -273,6 +277,9 @@ export const selectShowSubElectrode = (state) => state.stack.showSubElectrode
 export const selectWetMassMode = (state) => state.stack.wetMassMode
 export const selectDryCathodeMass = (state) => state.stack.dryCathodeMass
 export const selectDryAnodeMass = (state) => state.stack.dryAnodeMass
+
+export const selectCPorosity = (state) => state.stack.cathode.porosity
+export const selectAPorosity = (state) => state.stack.anode.porosity
 
 export const selectActiveElectrode = (state) => state.stack.activeElectrode;
 
