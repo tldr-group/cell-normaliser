@@ -33,6 +33,7 @@ import {
 
 import styles from "./Stack.module.css";
 import "./../../App.css";
+import { ElectrodeBox } from "./components/electrodeBox";
 
 export function Electrode() {
   const Area = useSelector(selectArea);
@@ -184,137 +185,8 @@ export function Electrode() {
   }
 
   //   CATHODE HALF CELL
-  else if (ActiveElectrode === "cathode") {
-    return (
-      <div className="box-row">
-        <div className="box-12">
-          <div className={styles.cathode}>
-            <div className="box-12">
-              <p className={styles.title}>Cathode</p>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Area / mm<sup>2</sup>
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode area"
-                onChange={(e) => dispatch(setArea(e.target.value))}
-                value={String(valueReturn(Area))}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector thickness / µm</p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode current collector thickness"
-                onChange={(e) => dispatch(setCCCThickness(e.target.value))}
-                value={String(valueReturn(CCCThickness))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector mass / g</p>
-              <input
-                className={styles.button}
-                type="text"
-                aria-label="Set cathode current collector mass"
-                value={String(valueReturn(CCCMass))}
-                onChange={(e) => dispatch(setCCCMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Cathode + current collector thickness / µm
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode thickness"
-                onChange={(e) =>
-                  dispatch(setTotalCathodeThickness(e.target.value))
-                }
-                value={valueReturn(TotalCathodeThickness)}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <WetMassBox electrode={ActiveElectrode} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ANODE HALF CELL
-  else if (ActiveElectrode === "anode") {
-    return (
-      <div className="box-row">
-        <div className="box-12">
-          <div className={styles.anode}>
-            <div className="box-12">
-              <p className={styles.title}>Anode</p>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Area / mm<sup>2</sup>
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set anode area"
-                onChange={(e) => dispatch(setArea(e.target.value))}
-                value={String(valueReturn(Area))}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector thickness / µm</p>
-              <input
-                className={styles.button}
-                aria-label="Set anode current collector thickness"
-                onChange={(e) => dispatch(setACCThickness(e.target.value))}
-                value={String(valueReturn(ACCThickness))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector mass / g</p>
-              <input
-                className={styles.button}
-                type="text"
-                aria-label="Set anode current collector mass"
-                value={String(valueReturn(ACCMass))}
-                onChange={(e) => dispatch(setACCMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Anode + current collector thickness / µm
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set anode thickness"
-                onChange={(e) =>
-                  dispatch(setTotalAnodeThickness(e.target.value))
-                }
-                value={valueReturn(TotalAnodeThickness)}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <WetMassBox electrode={ActiveElectrode} />
-          </div>
-        </div>
-      </div>
-    );
+  else if (ActiveElectrode === "cathode" || ActiveElectrode === "anode") {
+    return <ElectrodeBox electrode={ActiveElectrode} />;
   }
 
   // FULL CELL
@@ -322,123 +194,11 @@ export function Electrode() {
     return (
       <div className="box-row">
         <div className="box-6">
-          <div className={styles.cathode}>
-            <div className="box-12">
-              <p className={styles.title}>Cathode</p>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Area / mm<sup>2</sup>
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode area"
-                onChange={(e) => dispatch(setArea(e.target.value))}
-                value={String(valueReturn(Area))}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector thickness / µm</p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode current collector thickness"
-                onChange={(e) => dispatch(setCCCThickness(e.target.value))}
-                value={String(valueReturn(CCCThickness))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector mass / g</p>
-              <input
-                className={styles.button}
-                type="text"
-                aria-label="Set cathode current collector mass"
-                value={String(valueReturn(CCCMass))}
-                onChange={(e) => dispatch(setCCCMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Cathode + current collector thickness / µm
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set cathode thickness"
-                onChange={(e) =>
-                  dispatch(setTotalCathodeThickness(e.target.value))
-                }
-                value={valueReturn(TotalCathodeThickness)}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <WetMassBox electrode="cathode" />
-          </div>
+          <ElectrodeBox electrode="cathode" />
         </div>
 
         <div className="box-6">
-          <div className={styles.anode}>
-            <div className="box-12">
-              <p className={styles.title}>Anode</p>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Area / mm<sup>2</sup>
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set anode area"
-                onChange={(e) => dispatch(setArea(e.target.value))}
-                value={String(valueReturn(Area))}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector thickness / µm</p>
-              <input
-                className={styles.button}
-                aria-label="Set anode current collector thickness"
-                onChange={(e) => dispatch(setACCThickness(e.target.value))}
-                value={String(valueReturn(ACCThickness))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>Current collector mass / g</p>
-              <input
-                className={styles.button}
-                type="text"
-                aria-label="Set anode current collector mass"
-                value={String(valueReturn(ACCMass))}
-                onChange={(e) => dispatch(setACCMass(e.target.value))}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <div className="box-12-row-4">
-              <p className={styles.title}>
-                Anode + current collector thickness / µm
-              </p>
-              <input
-                className={styles.button}
-                aria-label="Set anode thickness"
-                onChange={(e) =>
-                  dispatch(setTotalAnodeThickness(e.target.value))
-                }
-                value={valueReturn(TotalAnodeThickness)}
-                onBlur={(e) => validate(e)}
-              ></input>
-            </div>
-
-            <WetMassBox electrode="anode" />
-          </div>
+          <ElectrodeBox electrode="anode" />
         </div>
       </div>
     );

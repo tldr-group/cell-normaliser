@@ -1,37 +1,35 @@
-.resultsSection{
-    background-color: var(--blue);
-    color: var(--black);
-    margin-bottom: 20px;
-    border: 2px solid transparent;
-    border-radius: 5px;
-    align-self: center;
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
+.resultsSection {
+  background-color: var(--blue);
+  color: var(--black);
+  margin-bottom: 20px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  align-self: center;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.title{
-    font-size: 20px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+.title {
+  font-size: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.subtitle{
-    font-size: 16px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+.subtitle {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.resultTitle{
-    font-size: 18px;
+.resultTitle {
+  font-size: 18px;
 }
 
-.result{
-    font-size: 18px;
-    background-color: rgba(255, 255, 255, 0.149);
-    border: 2px solid transparent;
-    border-radius: 5px;
-    margin-top: 5px;
+.result {
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.149);
+  border: 2px solid transparent;
+  border-radius: 5px;
+  margin-top: 5px;
 }
-
-
