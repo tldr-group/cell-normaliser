@@ -31,6 +31,10 @@ import {
   setAAMThickness,
   setCAMMass,
   setCAMThickness,
+  setDryCathodeMass,
+  setDryAnodeMass,
+  selectDryCathodeMass,
+  selectDryAnodeMass,
 } from "./../stackSlice";
 
 export function ElectrodeBox(props) {
@@ -42,6 +46,8 @@ export function ElectrodeBox(props) {
   const ACCThickness = useSelector(selectACCThickness);
   const TotalCathodeThickness = useSelector(selectTotalCathodeThickness);
   const TotalAnodeThickness = useSelector(selectTotalAnodeThickness);
+  const DryCathodeMass = useSelector(selectDryCathodeMass);
+  const DryAnodeMass = useSelector(selectDryAnodeMass);
   const setCCThickness =
     ActiveElectrode === "cathode" ? setCCCThickness : setACCThickness;
   const CCThickness =
@@ -54,6 +60,9 @@ export function ElectrodeBox(props) {
       : setTotalAnodeThickness;
   const TotalThickness =
     ActiveElectrode === "cathode" ? TotalCathodeThickness : TotalAnodeThickness;
+  const setDryMass =
+    ActiveElectrode === "cathode" ? setDryCathodeMass : setDryAnodeMass;
+  const DryMass = ActiveElectrode === "cathode" ? DryCathodeMass : DryAnodeMass;
   const dispatch = useDispatch();
   return (
     <div className="box-row">
@@ -107,6 +116,19 @@ export function ElectrodeBox(props) {
               aria-label="Set thickness"
               onChange={(e) => dispatch(setTotalThickness(e.target.value))}
               value={valueReturn(TotalThickness)}
+              onBlur={(e) => validate(e)}
+            ></input>
+          </div>
+
+          <div className="box-12-row-4">
+            <p className={styles.title}>
+              {ActiveElectrode} + current collector mass / g
+            </p>
+            <input
+              className={styles.button}
+              aria-label="Set dry mass"
+              onChange={(e) => dispatch(setDryMass(e.target.value))}
+              value={valueReturn(DryMass)}
               onBlur={(e) => validate(e)}
             ></input>
           </div>
