@@ -130,6 +130,27 @@ function calculateWetMass(
   return dryMass + massElectrolyte;
 }
 
+function widenElectrodeContainer(ActiveElectrode) {
+  const eContainer = document.getElementById("electrode-container");
+  const sContainer = document.getElementById("stack-container");
+  const cContainer = document.getElementById("cell-container");
+  if (ActiveElectrode === "both") {
+    eContainer.className = "";
+    eContainer.classList.add("box-12");
+    sContainer.className = "";
+    sContainer.classList.add("box-6");
+    cContainer.className = "";
+    cContainer.classList.add("box-6");
+  } else {
+    eContainer.className = "";
+    eContainer.classList.add("box-6");
+    sContainer.className = "";
+    sContainer.classList.add("box-3");
+    cContainer.className = "";
+    cContainer.classList.add("box-3");
+  }
+}
+
 export const stackSlice = createSlice({
   name: "stack",
   initialState,
@@ -139,6 +160,7 @@ export const stackSlice = createSlice({
     },
     setActiveElectrode: (state, action) => {
       state.activeElectrode = action.payload;
+      widenElectrodeContainer(action.payload);
     },
     setCCCThickness: (state, action) => {
       state.cathodeCC.thickness = action.payload;
