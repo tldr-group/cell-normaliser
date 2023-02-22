@@ -1,34 +1,23 @@
 import { React, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { WetMassBox } from "./components/wetMassBox";
-import { valueReturn, validate } from "./stackFunctions";
 import {
-  setAThickness,
-  setCThickness,
-  setArea,
   selectArea,
   selectActiveElectrode,
   setActiveElectrode,
-  setCCCThickness,
   selectCCCThickness,
   selectCCCMass,
-  setCCCMass,
   selectACCMass,
-  setACCMass,
   setTotalCathodeMass,
   setTotalCathodeThickness,
-  selectTotalCathodeThickness,
   setTotalAnodeMass,
   setTotalAnodeThickness,
-  selectTotalAnodeThickness,
   selectLowRateCapacity,
   selectStack,
   selectACCThickness,
-  setACCThickness,
-  setAAMMass,
-  setAAMThickness,
-  setCAMMass,
-  setCAMThickness,
+  updateCPorosity,
+  updateAPorosity,
+  updateCWetMass,
+  updateAWetMass,
 } from "./stackSlice";
 
 import styles from "./Stack.module.css";
@@ -42,14 +31,13 @@ export function Electrode() {
   const CCCMass = useSelector(selectCCCMass);
   const ACCMass = useSelector(selectACCMass);
   const ACCThickness = useSelector(selectACCThickness);
-  const TotalCathodeThickness = useSelector(selectTotalCathodeThickness);
-  const TotalAnodeThickness = useSelector(selectTotalAnodeThickness);
   const LowRateCapacity = useSelector(selectLowRateCapacity);
   const Stack = useSelector(selectStack);
   const dispatch = useDispatch();
 
   useEffect(() => {
     syncElectrode();
+    updatePorosityOrWetMass();
   }, [Stack]);
 
   function syncElectrode() {
@@ -67,7 +55,6 @@ export function Electrode() {
         (1 -
           Stack.anode.binder.massPercentDrySlurry -
           Stack.anode.conductiveAdditive.massPercentDrySlurry);
-      dispatch(setAAMMass(anodeAMMass));
 
       var anodeAMThickness =
         (anodeAMMass * 1e6) /
@@ -77,7 +64,6 @@ export function Electrode() {
       var anodeCAThickness =
         (anodeCAMass * 1e6) /
         (Stack.anode.conductiveAdditive.density * (Area * 1e-3 ** 2));
-      dispatch(setAAMThickness(anodeAMThickness));
 
       var anodeThickness =
         (anodeAMThickness + anodeBThickness + anodeCAThickness) /
@@ -92,7 +78,6 @@ export function Electrode() {
         anodeAMMass + anodeBMass + anodeCAMass + anodeEMass
       );
 
-      dispatch(setAThickness(anodeThickness));
       dispatch(setTotalAnodeMass(anodeMass + ACCMass));
       dispatch(setTotalAnodeThickness(anodeThickness + ACCThickness));
     } else if (ActiveElectrode === "anode") {
@@ -109,7 +94,6 @@ export function Electrode() {
         (1 -
           Stack.cathode.binder.massPercentDrySlurry -
           Stack.cathode.conductiveAdditive.massPercentDrySlurry);
-      dispatch(setCAMMass(cathodeCAMass));
 
       var cathodeAMThickness =
         (cathodeAMMass * 1e6) /
@@ -120,7 +104,6 @@ export function Electrode() {
       var cathodeCAThickness =
         (cathodeCAMass * 1e6) /
         (Stack.cathode.conductiveAdditive.density * (Area * 1e-3 ** 2));
-      dispatch(setCAMThickness(cathodeAMThickness));
 
       var cathodeThickness =
         (cathodeAMThickness + cathodeBThickness + cathodeCAThickness) /
@@ -135,9 +118,18 @@ export function Electrode() {
         cathodeAMMass + cathodeBMass + cathodeCAMass + cathodeEMass
       );
 
-      dispatch(setCThickness(cathodeThickness));
       dispatch(setTotalCathodeMass(cathodeMass + CCCMass));
       dispatch(setTotalCathodeThickness(cathodeThickness + CCCThickness));
+    }
+  }
+
+  function updatePorosityOrWetMass() {
+    if (Stack.wetMassMode === "Wet") {
+      dispatch(updateCPorosity());
+      dispatch(updateAPorosity());
+    } else {
+      dispatch(updateCWetMass());
+      dispatch(updateAWetMass());
     }
   }
 
