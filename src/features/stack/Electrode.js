@@ -184,7 +184,7 @@ export function Electrode() {
     );
   }
 
-  //   CATHODE HALF CELL
+  //   HALF CELL
   else if (ActiveElectrode === "cathode" || ActiveElectrode === "anode") {
     return <ElectrodeBox electrode={ActiveElectrode} />;
   }
