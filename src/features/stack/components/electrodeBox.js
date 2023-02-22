@@ -84,7 +84,7 @@ export function ElectrodeBox(props) {
             <div className="box-8 vertical-center-parent">
               <div className="vertical-center">
                 <p className={styles.subtitle}>
-                  Mass of current collector / µm
+                  Thickness of current collector / µm
                 </p>
               </div>
             </div>
@@ -125,9 +125,7 @@ export function ElectrodeBox(props) {
           <div className="box-row">
             <div className="box-8 vertical-center-parent">
               <div className="vertical-center">
-                <p className={styles.subtitle}>
-                  Thickness of current collector / g
-                </p>
+                <p className={styles.subtitle}>Mass of current collector / g</p>
               </div>
             </div>
             <div className="box-4 vertical-center-parent">
