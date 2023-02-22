@@ -2,32 +2,17 @@ import { React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./../Stack.module.css";
 import { valueReturn, validate } from "./../stackFunctions";
-import {
-  selectTotalCathodeMass,
-  selectTotalAnodeMass,
-  selectWetMassMode,
-  selectCPorosity,
-  selectAPorosity,
-  selectAEDensity,
-  selectCEDensity,
-  setCEDensity,
-  setAEDensity,
-  setAPorosity,
-  setTotalAnodeMass,
-  setTotalCathodeMass,
-  setWetMassMode,
-  setCPorosity,
-} from "./../stackSlice";
+import * as stackSlice from "./../stackSlice";
 
 export function WetMassBox(electrode) {
   electrode = electrode.electrode;
-  const TotalCathodeMass = useSelector(selectTotalCathodeMass);
-  const TotalAnodeMass = useSelector(selectTotalAnodeMass);
-  const WetMassMode = useSelector(selectWetMassMode);
-  const CPorosity = useSelector(selectCPorosity);
-  const APorosity = useSelector(selectAPorosity);
-  const CEDensity = useSelector(selectCEDensity);
-  const AEDensity = useSelector(selectAEDensity);
+  const TotalCathodeMass = useSelector(stackSlice.selectTotalCathodeMass);
+  const TotalAnodeMass = useSelector(stackSlice.selectTotalAnodeMass);
+  const WetMassMode = useSelector(stackSlice.selectWetMassMode);
+  const CPorosity = useSelector(stackSlice.selectCPorosity);
+  const APorosity = useSelector(stackSlice.selectAPorosity);
+  const CEDensity = useSelector(stackSlice.selectCEDensity);
+  const AEDensity = useSelector(stackSlice.selectAEDensity);
   const dispatch = useDispatch();
 
   const WetMass = electrode === "cathode" ? TotalCathodeMass : TotalAnodeMass;
@@ -35,16 +20,20 @@ export function WetMassBox(electrode) {
   const Density = electrode === "cathode" ? CEDensity : AEDensity;
 
   const setWetMass =
-    electrode === "cathode" ? setTotalCathodeMass : setTotalAnodeMass;
-  const setPorosity = electrode === "cathode" ? setCPorosity : setAPorosity;
-  const setDensity = electrode === "cathode" ? setCEDensity : setAEDensity;
+    electrode === "cathode"
+      ? stackSlice.setWetCathodeMass
+      : stackSlice.setWetAnodeMass;
+  const setPorosity =
+    electrode === "cathode" ? stackSlice.setCPorosity : stackSlice.setAPorosity;
+  const setDensity =
+    electrode === "cathode" ? stackSlice.setCEDensity : stackSlice.setAEDensity;
 
   return (
     <>
       <div className="box-12-row-4">
         <p
           className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(setWetMassMode("Wet"))}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
         >
           Electrolyte + {electrode} + current collector mass / g
         </p>
@@ -61,7 +50,7 @@ export function WetMassBox(electrode) {
       <div className="box-12-row-4">
         <p
           className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(setWetMassMode("Dry"))}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
         >
           Porosity
         </p>
@@ -79,7 +68,7 @@ export function WetMassBox(electrode) {
       <div className="box-12-row-4">
         <p
           className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(setWetMassMode("Dry"))}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
         >
           Electrolyte density / g m<sup>-3</sup>
         </p>

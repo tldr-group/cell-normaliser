@@ -54,7 +54,7 @@ const initialState = {
     electrolyte: {
       mass: 0,
       thickness: 0,
-      density: 1.2e6,
+      density: 1e6,
     },
     dryMass: 2.95e-3,
     thickness: 100, // in µm
@@ -89,6 +89,7 @@ initialState.cathode.porosity = calculatePorosity(
   initialState.cathodeCC.thickness,
   initialState.cathode.thickness,
   initialState.cathode.wetMass,
+  initialState.cathode.dryMass,
   initialState.cathode.electrolyte.density
 );
 
@@ -97,6 +98,7 @@ initialState.anode.porosity = calculatePorosity(
   initialState.anodeCC.thickness,
   initialState.anode.thickness,
   initialState.anode.wetMass,
+  initialState.anode.dryMass,
   initialState.anode.electrolyte.density
 );
 
@@ -150,13 +152,13 @@ export const stackSlice = createSlice({
     setACCMass: (state, action) => {
       state.anodeCC.mass = action.payload;
     },
-    setTotalCathodeMass: (state, action) => {
+    setWetCathodeMass: (state, action) => {
       state.cathode.wetMass = action.payload;
     },
     setTotalCathodeThickness: (state, action) => {
       state.cathode.totalThickness = action.payload;
     },
-    setTotalAnodeMass: (state, action) => {
+    setWetAnodeMass: (state, action) => {
       state.anode.wetMass = action.payload;
     },
     setTotalAnodeThickness: (state, action) => {
@@ -245,14 +247,14 @@ export const {
   setActiveElectrode,
   setCCCThickness,
   setCCCMass,
-  setTotalCathodeMass,
+  setWetCathodeMass,
   setTotalCathodeThickness,
   setAvgVoltage,
   setLowRateCapacity,
   setMeasuredCapacity,
   setACCMass,
   setACCThickness,
-  setTotalAnodeMass,
+  setWetAnodeMass,
   setTotalAnodeThickness,
   setCAMMass,
   setCAMThickness,

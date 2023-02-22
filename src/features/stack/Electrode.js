@@ -1,38 +1,20 @@
 import { React, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectArea,
-  selectActiveElectrode,
-  setActiveElectrode,
-  selectCCCThickness,
-  selectCCCMass,
-  selectACCMass,
-  setTotalCathodeMass,
-  setTotalCathodeThickness,
-  setTotalAnodeMass,
-  setTotalAnodeThickness,
-  selectLowRateCapacity,
-  selectStack,
-  selectACCThickness,
-  updateCPorosity,
-  updateAPorosity,
-  updateCWetMass,
-  updateAWetMass,
-} from "./stackSlice";
+import * as stackSlice from "./stackSlice";
 
 import styles from "./Stack.module.css";
 import "./../../App.css";
 import { ElectrodeBox } from "./components/electrodeBox";
 
 export function Electrode() {
-  const Area = useSelector(selectArea);
-  const ActiveElectrode = useSelector(selectActiveElectrode);
-  const CCCThickness = useSelector(selectCCCThickness);
-  const CCCMass = useSelector(selectCCCMass);
-  const ACCMass = useSelector(selectACCMass);
-  const ACCThickness = useSelector(selectACCThickness);
-  const LowRateCapacity = useSelector(selectLowRateCapacity);
-  const Stack = useSelector(selectStack);
+  const Area = useSelector(stackSlice.selectArea);
+  const ActiveElectrode = useSelector(stackSlice.selectActiveElectrode);
+  const CCCThickness = useSelector(stackSlice.selectCCCThickness);
+  const CCCMass = useSelector(stackSlice.selectCCCMass);
+  const ACCMass = useSelector(stackSlice.selectACCMass);
+  const ACCThickness = useSelector(stackSlice.selectACCThickness);
+  const LowRateCapacity = useSelector(stackSlice.selectLowRateCapacity);
+  const Stack = useSelector(stackSlice.selectStack);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,8 +60,10 @@ export function Electrode() {
         anodeAMMass + anodeBMass + anodeCAMass + anodeEMass
       );
 
-      dispatch(setTotalAnodeMass(anodeMass + ACCMass));
-      dispatch(setTotalAnodeThickness(anodeThickness + ACCThickness));
+      dispatch(stackSlice.setWetAnodeMass(anodeMass + ACCMass));
+      dispatch(
+        stackSlice.setTotalAnodeThickness(anodeThickness + ACCThickness)
+      );
     } else if (ActiveElectrode === "anode") {
       var cathodeAMMass =
         LRCap / (Stack.cathode.activeMaterial.theoreticSpecificCapacity * 1e3);
@@ -118,18 +102,28 @@ export function Electrode() {
         cathodeAMMass + cathodeBMass + cathodeCAMass + cathodeEMass
       );
 
-      dispatch(setTotalCathodeMass(cathodeMass + CCCMass));
-      dispatch(setTotalCathodeThickness(cathodeThickness + CCCThickness));
+      dispatch(stackSlice.setWetCathodeMass(cathodeMass + CCCMass));
+      dispatch(
+        stackSlice.setTotalCathodeThickness(cathodeThickness + CCCThickness)
+      );
     }
   }
 
   function updatePorosityOrWetMass() {
-    if (Stack.wetMassMode === "Wet") {
-      dispatch(updateCPorosity());
-      dispatch(updateAPorosity());
-    } else {
-      dispatch(updateCWetMass());
-      dispatch(updateAWetMass());
+    if (Stack.wetMassMode === "Wet" && ActiveElectrode === "cathode") {
+      dispatch(stackSlice.updateCPorosity());
+    } else if (Stack.wetMassMode === "Wet" && ActiveElectrode === "anode") {
+      dispatch(stackSlice.updateAPorosity());
+    } else if (Stack.wetMassMode === "Dry" && ActiveElectrode === "cathode") {
+      dispatch(stackSlice.updateCWetMass());
+    } else if (Stack.wetMassMode === "Dry" && ActiveElectrode === "anode") {
+      dispatch(stackSlice.updateAWetMass());
+    } else if (Stack.wetMassMode === "Dry" && ActiveElectrode === "both") {
+      dispatch(stackSlice.updateCWetMass());
+      dispatch(stackSlice.updateAWetMass());
+    } else if (Stack.wetMassMode === "Wet" && ActiveElectrode === "both") {
+      dispatch(stackSlice.updateCPorosity());
+      dispatch(stackSlice.updateAPorosity());
     }
   }
 
@@ -148,7 +142,9 @@ export function Electrode() {
               <div className="box-4">
                 <button
                   className={styles.button}
-                  onClick={() => dispatch(setActiveElectrode("cathode"))}
+                  onClick={() =>
+                    dispatch(stackSlice.setActiveElectrode("cathode"))
+                  }
                 >
                   Cathode half cell
                 </button>
@@ -156,7 +152,9 @@ export function Electrode() {
               <div className="box-4">
                 <button
                   className={styles.button}
-                  onClick={() => dispatch(setActiveElectrode("anode"))}
+                  onClick={() =>
+                    dispatch(stackSlice.setActiveElectrode("anode"))
+                  }
                 >
                   Anode half cell
                 </button>
@@ -164,7 +162,9 @@ export function Electrode() {
               <div className="box-4">
                 <button
                   className={styles.button}
-                  onClick={() => dispatch(setActiveElectrode("both"))}
+                  onClick={() =>
+                    dispatch(stackSlice.setActiveElectrode("both"))
+                  }
                 >
                   Full cell
                 </button>

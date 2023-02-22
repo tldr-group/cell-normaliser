@@ -103,7 +103,7 @@ export function ElectrodeBox(props) {
               className={styles.button}
               aria-label="Set thickness"
               onChange={(e) => dispatch(setTotalThickness(e.target.value))}
-              value={valueReturn(TotalThickness)}
+              value={String(valueReturn(TotalThickness))}
               onBlur={(e) => validate(e)}
             ></input>
           </div>
@@ -116,7 +116,7 @@ export function ElectrodeBox(props) {
               className={styles.button}
               aria-label="Set dry mass"
               onChange={(e) => dispatch(setDryMass(e.target.value))}
-              value={valueReturn(DryMass)}
+              value={String(valueReturn(DryMass))}
               onBlur={(e) => validate(e)}
             ></input>
           </div>
