@@ -30,57 +30,81 @@ export function WetMassBox(electrode) {
 
   return (
     <>
-      <div className="box-12-row-4">
-        <p
-          className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
-        >
-          Electrolyte + {electrode} + current collector mass / g
-        </p>
-        <input
-          className={styles.button}
-          type="text"
-          aria-label="Set wet mass"
-          value={String(valueReturn(WetMass))}
-          onChange={(e) => dispatch(setWetMass(e.target.value))}
-          onBlur={(e) => validate(e)}
-          disabled={WetMassMode === "Wet" ? false : true}
-        ></input>
+      <div className="box-row">
+        <div className="box-8 vertical-center-parent">
+          <div className="vertical-center">
+            <p
+              className={styles.subtitle + " " + styles.clickable}
+              onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
+            >
+              Mass of electrolyte + {electrode} + current collector / g
+            </p>
+          </div>
+        </div>
+        <div className="box-4 vertical-center-parent">
+          <div className="vertical-center">
+            <input
+              className={styles.button}
+              type="text"
+              aria-label="Set wet mass"
+              value={String(valueReturn(WetMass))}
+              onChange={(e) => dispatch(setWetMass(e.target.value))}
+              onBlur={(e) => validate(e)}
+              disabled={WetMassMode === "Wet" ? false : true}
+            ></input>
+          </div>
+        </div>
       </div>
-      <div className="box-12-row-4">
-        <p
-          className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
-        >
-          Porosity
-        </p>
-        <input
-          className={styles.button}
-          type="text"
-          aria-label="Set porosity"
-          value={String(valueReturn(Porosity))}
-          onChange={(e) => dispatch(setPorosity(e.target.value))}
-          onBlur={(e) => validate(e)}
-          disabled={WetMassMode === "Dry" ? false : true}
-        ></input>
+      <div className="box-row">
+        <div className="box-8 vertical-center-parent">
+          <div className="vertical-center">
+            <p
+              className={styles.subtitle + " " + styles.clickable}
+              onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
+            >
+              Porosity
+            </p>
+          </div>
+        </div>
+        <div className="box-4 vertical-center-parent">
+          <div className="vertical-center">
+            <input
+              className={styles.button}
+              type="text"
+              aria-label="Set porosity"
+              value={String(valueReturn(Porosity))}
+              onChange={(e) => dispatch(setPorosity(e.target.value))}
+              onBlur={(e) => validate(e)}
+              disabled={WetMassMode === "Dry" ? false : true}
+            ></input>
+          </div>
+        </div>
       </div>
 
-      <div className="box-12-row-4">
-        <p
-          className={styles.title + " " + styles.clickable}
-          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
-        >
-          Electrolyte density / g m<sup>-3</sup>
-        </p>
-        <input
-          className={styles.button}
-          type="text"
-          aria-label="Set electrolyte density"
-          value={String(valueReturn(Density))}
-          onChange={(e) => dispatch(setDensity(e.target.value))}
-          onBlur={(e) => validate(e)}
-          disabled={WetMassMode === "Dry" ? false : true}
-        ></input>
+      <div className="box-row">
+        <div className="box-8 vertical-center-parent">
+          <div className="vertical-center">
+            <p
+              className={styles.subtitle + " " + styles.clickable}
+              onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
+            >
+              Electrolyte density / g m<sup>-3</sup>
+            </p>
+          </div>
+        </div>
+        <div className="box-4 vertical-center-parent">
+          <div className="vertical-center">
+            <input
+              className={styles.button}
+              type="text"
+              aria-label="Set electrolyte density"
+              value={String(valueReturn(Density))}
+              onChange={(e) => dispatch(setDensity(e.target.value))}
+              onBlur={(e) => validate(e)}
+              disabled={WetMassMode === "Dry" ? false : true}
+            ></input>
+          </div>
+        </div>
       </div>
     </>
   );
