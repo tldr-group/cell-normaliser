@@ -1,117 +1,87 @@
-import { React} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styles from './../Stack.module.css';
-import {valueReturn, validate} from './../stackFunctions'
-import {
-    selectTotalCathodeMass,
-    selectTotalAnodeMass,
-    selectWetMassMode,
-    selectDryCathodeMass,
-    selectDryAnodeMass,
-    selectCPorosity,
-    selectAPorosity,
-    setAPorosity,
-    setTotalAnodeMass,
-    setTotalCathodeMass,
-    setWetMassMode,
-    setDryAnodeMass,
-    setDryCathodeMass,
-    setCPorosity,
+import { React } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import styles from "./../Stack.module.css";
+import { valueReturn, validate } from "./../stackFunctions";
+import * as stackSlice from "./../stackSlice";
 
-} from './../stackSlice'
+export function WetMassBox(electrode) {
+  electrode = electrode.electrode;
+  const TotalCathodeMass = useSelector(stackSlice.selectTotalCathodeMass);
+  const TotalAnodeMass = useSelector(stackSlice.selectTotalAnodeMass);
+  const WetMassMode = useSelector(stackSlice.selectWetMassMode);
+  const CPorosity = useSelector(stackSlice.selectCPorosity);
+  const APorosity = useSelector(stackSlice.selectAPorosity);
+  const CEDensity = useSelector(stackSlice.selectCEDensity);
+  const AEDensity = useSelector(stackSlice.selectAEDensity);
+  const dispatch = useDispatch();
 
+  const WetMass = electrode === "cathode" ? TotalCathodeMass : TotalAnodeMass;
+  const Porosity = electrode === "cathode" ? CPorosity : APorosity;
+  const Density = electrode === "cathode" ? CEDensity : AEDensity;
 
-  export function WetMassBox (electrode){
-    electrode = electrode.electrode
-    const TotalCathodeMass = useSelector(selectTotalCathodeMass)
-    const TotalAnodeMass = useSelector(selectTotalAnodeMass)
-    const WetMassMode = useSelector(selectWetMassMode)
-    const DryCathodeMass = useSelector(selectDryCathodeMass)
-    const DryAnodeMass = useSelector(selectDryAnodeMass)
-    const CPorosity = useSelector(selectCPorosity)
-    const APorosity = useSelector(selectAPorosity)
-    const dispatch = useDispatch();
+  const setWetMass =
+    electrode === "cathode"
+      ? stackSlice.setWetCathodeMass
+      : stackSlice.setWetAnodeMass;
+  const setPorosity =
+    electrode === "cathode" ? stackSlice.setCPorosity : stackSlice.setAPorosity;
+  const setDensity =
+    electrode === "cathode" ? stackSlice.setCEDensity : stackSlice.setAEDensity;
 
-    function wetMassDropdown(electrode){
-        return(
-        <div tabIndex={0} className='dropdown'>
-            <div className='dropdownBtn'>{WetMassMode+' '+electrode+' + current collector mass / g'}</div>
-            <div className='dropdownItems'>
-                {['Wet', 'Dry'].map(l => {
-                    return(
-                    <div className='dropdownItem' key={l} onClick={() => dispatch(setWetMassMode(l))}>
-                        {l}
-                    </div>
-                    )
-                })
-                }
-            
-                </div>
-        </div>
-        )
-            }
+  return (
+    <>
+      <div className="box-12-row-4">
+        <p
+          className={styles.title + " " + styles.clickable}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
+        >
+          Electrolyte + {electrode} + current collector mass / g
+        </p>
+        <input
+          className={styles.button}
+          type="text"
+          aria-label="Set wet mass"
+          value={String(valueReturn(WetMass))}
+          onChange={(e) => dispatch(setWetMass(e.target.value))}
+          onBlur={(e) => validate(e)}
+          disabled={WetMassMode === "Wet" ? false : true}
+        ></input>
+      </div>
+      <div className="box-12-row-4">
+        <p
+          className={styles.title + " " + styles.clickable}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
+        >
+          Porosity
+        </p>
+        <input
+          className={styles.button}
+          type="text"
+          aria-label="Set porosity"
+          value={String(valueReturn(Porosity))}
+          onChange={(e) => dispatch(setPorosity(e.target.value))}
+          onBlur={(e) => validate(e)}
+          disabled={WetMassMode === "Dry" ? false : true}
+        ></input>
+      </div>
 
-    if (electrode==='cathode'){
-        return (
-            <div className="box-row">
-            <div className="box-12">
-            {wetMassDropdown(electrode)}
-            </div>
-            <div className="box-12">
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set mass"
-            value={WetMassMode==='Wet' ? String(valueReturn(TotalCathodeMass)) : String(valueReturn(DryCathodeMass))}
-            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalCathodeMass(e.target.value) : setDryCathodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-            <div className="box-12">
-            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
-            Porosity
-            </p>
-            <input 
-            className={styles.button}
-            value={String(valueReturn(CPorosity))}
-            onChange={(e) => dispatch(setCPorosity(e.target.value))}
-            hidden={WetMassMode==='Wet' ? true : ''}>
-            </input>
-            </div>
-            </div>
-        )
-    }
-    else if (electrode==='anode'){
-        return (
-            <div className="box-row">
-            <div className="box-12">
-            
-            {wetMassDropdown(electrode)}
-            </div>
-            <div className="box-12">
-            <input
-            className={styles.button}
-            type='text'
-            aria-label="Set mass"
-            value={WetMassMode==='Wet' ? String(valueReturn(TotalAnodeMass)) : String(valueReturn(DryAnodeMass))}
-            onChange={(e) => dispatch(WetMassMode==='Wet' ? setTotalAnodeMass(e.target.value) : setDryAnodeMass(e.target.value))}
-            onBlur={(e) => validate(e)}
-            >
-            </input>
-            </div>
-            <div className="box-12">
-            <p className={styles.title} hidden={WetMassMode==='Wet' ? true : ''}>
-            Porosity
-            </p>
-            <input 
-            className={styles.button}
-            value={String(valueReturn(APorosity))}
-            onChange={(e) => dispatch(setAPorosity(e.target.value))}
-            hidden={WetMassMode==='Wet' ? true : ''}>
-            </input>
-            </div>
-            </div>
-        )
-    }
-    }
+      <div className="box-12-row-4">
+        <p
+          className={styles.title + " " + styles.clickable}
+          onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
+        >
+          Electrolyte density / g m<sup>-3</sup>
+        </p>
+        <input
+          className={styles.button}
+          type="text"
+          aria-label="Set electrolyte density"
+          value={String(valueReturn(Density))}
+          onChange={(e) => dispatch(setDensity(e.target.value))}
+          onBlur={(e) => validate(e)}
+          disabled={WetMassMode === "Dry" ? false : true}
+        ></input>
+      </div>
+    </>
+  );
+}
