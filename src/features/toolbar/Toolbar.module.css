@@ -1,0 +1,50 @@
+.toolbar {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  border-radius: 5px;
+  height: 100%;
+}
+
+.toolbarDropdown {
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 5px;
+  width: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: var(--green);
+}
+.toolbarDropdown:hover {
+  cursor: pointer;
+}
+
+.toolbarDropdown:hover > .toolbarItems {
+  display: block;
+}
+
+.toolbarButton {
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  font-size: 16px;
+}
+
+.toolbarItem {
+  background-color: var(--white);
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.toolbarItems {
+  display: none;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
