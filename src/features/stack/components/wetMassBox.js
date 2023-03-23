@@ -11,13 +11,12 @@ export function WetMassBox(electrode) {
   const WetMassMode = useSelector(stackSlice.selectWetMassMode);
   const CPorosity = useSelector(stackSlice.selectCPorosity);
   const APorosity = useSelector(stackSlice.selectAPorosity);
-  const CEDensity = useSelector(stackSlice.selectCEDensity);
-  const AEDensity = useSelector(stackSlice.selectAEDensity);
+  const EDensity = useSelector(stackSlice.selectEDensity);
   const dispatch = useDispatch();
 
   const WetMass = electrode === "cathode" ? TotalCathodeMass : TotalAnodeMass;
   const Porosity = electrode === "cathode" ? CPorosity : APorosity;
-  const Density = electrode === "cathode" ? CEDensity : AEDensity;
+  const Density = EDensity;
 
   const setWetMass =
     electrode === "cathode"
@@ -37,7 +36,7 @@ export function WetMassBox(electrode) {
               className={styles.subtitle + " " + styles.clickable}
               onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
             >
-              Mass of electrolyte + {electrode} + current collector / g
+              Mass of electrolyte + {electrode} + current collector / mg
             </p>
           </div>
         </div>

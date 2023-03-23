@@ -23,10 +23,10 @@ export function Electrode() {
   }, [Stack]);
 
   function syncElectrode() {
-    var LRCap = Stack.npRatio * LowRateCapacity;
     if (ActiveElectrode === "cathode") {
+      var LRCap = LowRateCapacity * Stack.npRatio;
       var anodeAMMass =
-        LRCap / (Stack.anode.activeMaterial.theoreticSpecificCapacity * 1e3);
+        LRCap / Stack.anode.activeMaterial.theoreticSpecificCapacity;
       var anodeBMass =
         (Stack.anode.binder.massPercentDrySlurry * anodeAMMass) /
         (1 -
@@ -52,10 +52,7 @@ export function Electrode() {
         (1 - Stack.anode.porosity);
       var anodeEThickness = Stack.anode.porosity * anodeThickness;
       var anodeEMass =
-        anodeEThickness *
-        1e-6 *
-        Stack.anode.electrolyte.density *
-        (Area * 1e-3 ** 2);
+        anodeEThickness * 1e-6 * Stack.electrolyte.density * (Area * 1e-3 ** 2);
       var anodeMass = Number(
         anodeAMMass + anodeBMass + anodeCAMass + anodeEMass
       );
@@ -65,8 +62,9 @@ export function Electrode() {
         stackSlice.setTotalAnodeThickness(anodeThickness + ACCThickness)
       );
     } else if (ActiveElectrode === "anode") {
+      var LRCap = LowRateCapacity / Stack.npRatio;
       var cathodeAMMass =
-        LRCap / (Stack.cathode.activeMaterial.theoreticSpecificCapacity * 1e3);
+        LRCap / Stack.cathode.activeMaterial.theoreticSpecificCapacity;
       var cathodeBMass =
         (Stack.cathode.binder.massPercentDrySlurry * cathodeAMMass) /
         (1 -
@@ -80,27 +78,29 @@ export function Electrode() {
           Stack.cathode.conductiveAdditive.massPercentDrySlurry);
 
       var cathodeAMThickness =
-        (cathodeAMMass * 1e6) /
+        (cathodeAMMass * 1e3) /
         (Stack.cathode.activeMaterial.density * (Area * 1e-3 ** 2));
       var cathodeBThickness =
-        (cathodeBMass * 1e6) /
+        (cathodeBMass * 1e3) /
         (Stack.cathode.binder.density * (Area * 1e-3 ** 2));
       var cathodeCAThickness =
-        (cathodeCAMass * 1e6) /
+        (cathodeCAMass * 1e3) /
         (Stack.cathode.conductiveAdditive.density * (Area * 1e-3 ** 2));
 
       var cathodeThickness =
         (cathodeAMThickness + cathodeBThickness + cathodeCAThickness) /
-        (1 - Stack.cathode.porosity);
-      var cathodeEThickness = Stack.cathode.porosity * cathodeThickness;
+        (1 - 0.335); // 0.335 is the porosity of the cathode
+      var cathodeEThickness = 0.335 * cathodeThickness;
       var cathodeEMass =
         cathodeEThickness *
         1e-6 *
-        Stack.cathode.electrolyte.density *
-        (Area * 1e-3 ** 2);
+        Stack.electrolyte.density *
+        (Area * 1e-3 ** 2) *
+        1e3;
       var cathodeMass = Number(
         cathodeAMMass + cathodeBMass + cathodeCAMass + cathodeEMass
       );
+      console.log(cathodeBMass, cathodeCAMass, cathodeMass);
 
       dispatch(stackSlice.setWetCathodeMass(cathodeMass + CCCMass));
       dispatch(
