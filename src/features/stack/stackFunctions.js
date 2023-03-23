@@ -1,9 +1,12 @@
 export function valueReturn(value) {
-  if (Number(value) >= 0) {
+  if (Number(value) < 0) {
+    console.log("Negative value!", value);
     return value;
-  } else {
-    return "";
+  } else if ((Number(value) === Infinity) | (Number(value) === -Infinity)) {
+    console.log("Infinite value!", Math.abs(value));
+    return 0;
   }
+  return value;
 }
 
 export function validate(e) {
