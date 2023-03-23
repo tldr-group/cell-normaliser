@@ -45,9 +45,9 @@ export function WetMassBox(electrode) {
           <div className="vertical-center">
             <input
               className={styles.button}
-              type="text"
+              type="number"
               aria-label="Set wet mass"
-              value={String(valueReturn(WetMass))}
+              value={valueReturn(WetMass)}
               onChange={(e) => dispatch(setWetMass(e.target.value))}
               onBlur={(e) => validate(e)}
               disabled={WetMassMode === "Wet" ? false : true}
@@ -70,11 +70,11 @@ export function WetMassBox(electrode) {
           <div className="vertical-center">
             <input
               className={styles.button}
-              type="text"
               aria-label="Set porosity"
-              value={String(valueReturn(Porosity))}
+              value={valueReturn(Porosity)}
               onChange={(e) => dispatch(setPorosity(e.target.value))}
               onBlur={(e) => validate(e)}
+              type="number"
               disabled={WetMassMode === "Dry" ? false : true}
             ></input>
           </div>
@@ -96,9 +96,9 @@ export function WetMassBox(electrode) {
           <div className="vertical-center">
             <input
               className={styles.button}
-              type="text"
+              type="number"
               aria-label="Set electrolyte density"
-              value={String(valueReturn(Density))}
+              value={valueReturn(Density)}
               onChange={(e) => dispatch(setDensity(e.target.value))}
               onBlur={(e) => validate(e)}
               disabled={WetMassMode === "Dry" ? false : true}

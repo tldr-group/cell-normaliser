@@ -113,7 +113,8 @@ function calculatePorosity(
   const totalVolume = (totalThickness - CCThickness) * area * 1e-12; // in m3
   const massElectrolyte = wetMass - dryMass; // in g
   const volumeElectrolyte = massElectrolyte / electrolyteDensity; // in m3
-  return (volumeElectrolyte / totalVolume).toPrecision(3);
+  console.log(Number((volumeElectrolyte / totalVolume).toPrecision(3)));
+  return Number((volumeElectrolyte / totalVolume).toPrecision(3));
 }
 
 function calculateWetMass(
@@ -156,62 +157,134 @@ export const stackSlice = createSlice({
   initialState,
   reducers: {
     setArea: (state, action) => {
-      state.area = action.payload;
+      if (action.payload === "") {
+        state.area = action.payload;
+      } else {
+        state.area = Number(action.payload);
+      }
     },
     setActiveElectrode: (state, action) => {
       state.activeElectrode = action.payload;
       widenElectrodeContainer(action.payload);
     },
     setCCCThickness: (state, action) => {
-      state.cathodeCC.thickness = action.payload;
+      if (action.payload === "") {
+        state.cathodeCC.thickness = action.payload;
+      } else {
+        state.cathodeCC.thickness = Number(action.payload);
+      }
     },
     setCCCMass: (state, action) => {
-      state.cathodeCC.mass = action.payload;
+      if (action.payload === "") {
+        state.cathodeCC.mass = action.payload;
+      } else {
+        state.cathodeCC.mass = Number(action.payload);
+      }
     },
     setACCThickness: (state, action) => {
-      state.anodeCC.thickness = action.payload;
+      if (action.payload === "") {
+        state.anodeCC.thickness = action.payload;
+      } else {
+        state.anodeCC.thickness = Number(action.payload);
+      }
     },
     setACCMass: (state, action) => {
-      state.anodeCC.mass = action.payload;
+      if (action.payload === "") {
+        state.anodeCC.mass = action.payload;
+      } else {
+        state.anodeCC.mass = Number(action.payload);
+      }
     },
     setWetCathodeMass: (state, action) => {
-      state.cathode.wetMass = action.payload;
+      if (action.payload === "") {
+        state.cathode.wetMass = action.payload;
+      } else {
+        state.cathode.wetMass = Number(action.payload);
+      }
     },
     setTotalCathodeThickness: (state, action) => {
-      state.cathode.totalThickness = action.payload;
+      if (action.payload === "") {
+        state.cathode.totalThickness = action.payload;
+      } else {
+        state.cathode.totalThickness = Number(action.payload);
+      }
     },
     setWetAnodeMass: (state, action) => {
-      state.anode.wetMass = action.payload;
+      if (action.payload === "") {
+        state.anode.wetMass = action.payload;
+      } else {
+        state.anode.wetMass = Number(action.payload);
+      }
     },
     setTotalAnodeThickness: (state, action) => {
-      state.anode.totalThickness = action.payload;
+      if (action.payload === "") {
+        state.anode.totalThickness = action.payload;
+      } else {
+        state.anode.totalThickness = Number(action.payload);
+      }
     },
     setDryCathodeMass: (state, action) => {
-      state.cathode.dryMass = action.payload;
+      if (action.payload === "") {
+        state.cathode.dryMass = action.payload;
+      } else {
+        state.cathode.dryMass = Number(action.payload);
+      }
     },
     setDryAnodeMass: (state, action) => {
-      state.anode.dryMass = action.payload;
+      if (action.payload === "") {
+        state.anode.dryMass = action.payload;
+      } else {
+        state.anode.dryMass = Number(action.payload);
+      }
     },
     setAvgVoltage: (state, action) => {
-      state.averageVoltage = action.payload;
+      if (action.payload === "") {
+        state.avgVoltage = action.payload;
+      } else {
+        state.avgVoltage = Number(action.payload);
+      }
     },
     setLowRateCapacity: (state, action) => {
-      state.lowRateCapacity = action.payload;
+      if (action.payload === "") {
+        state.lowRateCapacity = action.payload;
+      } else {
+        state.lowRateCapacity = Number(action.payload);
+      }
     },
     setMeasuredCapacity: (state, action) => {
-      state.measuredCapacity = action.payload;
+      if (action.payload === "") {
+        state.measuredCapacity = action.payload;
+      } else {
+        state.measuredCapacity = Number(action.payload);
+      }
     },
     setCPorosity: (state, action) => {
-      state.cathode.porosity = action.payload;
+      if (action.payload === "") {
+        state.cathode.porosity = action.payload;
+      } else {
+        state.cathode.porosity = Number(action.payload);
+      }
     },
     setAPorosity: (state, action) => {
-      state.anode.porosity = action.payload;
+      if (action.payload === "") {
+        state.anode.porosity = action.payload;
+      } else {
+        state.anode.porosity = Number(action.payload);
+      }
     },
     setCEDensity: (state, action) => {
-      state.cathode.electrolyte.density = action.payload;
+      if (action.payload === "") {
+        state.cathode.electrolyte.density = action.payload;
+      } else {
+        state.cathode.electrolyte.density = Number(action.payload);
+      }
     },
     setAEDensity: (state, action) => {
-      state.anode.electrolyte.density = action.payload;
+      if (action.payload === "") {
+        state.anode.electrolyte.density = action.payload;
+      } else {
+        state.anode.electrolyte.density = Number(action.payload);
+      }
     },
     setWetMassMode: (state, action) => {
       state.wetMassMode = action.payload;

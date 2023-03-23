@@ -74,7 +74,8 @@ export function ElectrodeBox(props) {
                   className={styles.button}
                   aria-label="Set area"
                   onChange={(e) => dispatch(setArea(e.target.value))}
-                  value={String(valueReturn(Area))}
+                  value={valueReturn(Area)}
+                  type="number"
                 ></input>
               </div>
             </div>
@@ -94,8 +95,9 @@ export function ElectrodeBox(props) {
                   className={styles.button}
                   aria-label="Set current collector thickness"
                   onChange={(e) => dispatch(setCCThickness(e.target.value))}
-                  value={String(valueReturn(CCThickness))}
+                  value={valueReturn(CCThickness)}
                   onBlur={(e) => validate(e)}
+                  type="number"
                 ></input>
               </div>
             </div>
@@ -115,8 +117,9 @@ export function ElectrodeBox(props) {
                   className={styles.button}
                   aria-label="Set thickness"
                   onChange={(e) => dispatch(setTotalThickness(e.target.value))}
-                  value={String(valueReturn(TotalThickness))}
+                  value={valueReturn(TotalThickness)}
                   onBlur={(e) => validate(e)}
+                  type="number"
                 ></input>
               </div>
             </div>
@@ -132,9 +135,9 @@ export function ElectrodeBox(props) {
               <div className="vertical-center">
                 <input
                   className={styles.button}
-                  type="text"
+                  type="number"
                   aria-label="Set current collector mass"
-                  value={String(valueReturn(CCMass))}
+                  value={valueReturn(CCMass)}
                   onChange={(e) => dispatch(setCCMass(e.target.value))}
                   onBlur={(e) => validate(e)}
                 ></input>
@@ -155,8 +158,9 @@ export function ElectrodeBox(props) {
                 <input
                   className={styles.button}
                   aria-label="Set dry mass"
+                  type="number"
                   onChange={(e) => dispatch(setDryMass(e.target.value))}
-                  value={String(valueReturn(DryMass))}
+                  value={valueReturn(DryMass)}
                   onBlur={(e) => validate(e)}
                 ></input>
               </div>
