@@ -3,6 +3,7 @@ import { Electrode } from "./features/stack/Electrode";
 import { Stack } from "./features/stack/Stack";
 import { Cell } from "./features/cell/Cell";
 import { Toolbar } from "./features/toolbar/Toolbar";
+import { Visuals } from "./features/visuals/Visuals";
 import "./App.css";
 
 function App() {
@@ -36,9 +37,10 @@ function App() {
                   {/* <SubElectrode /> */}
                 </div>
                 <div id="stack-container" className="box-3">
-                  <Stack />
+                  <Visuals />
                 </div>
                 <div id="cell-container" className="box-3">
+                  <Stack />
                   <Cell />
                 </div>
               </div>
