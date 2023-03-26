@@ -57,9 +57,13 @@ export function Electrode() {
         anodeAMMass + anodeBMass + anodeCAMass + anodeEMass
       );
 
-      dispatch(stackSlice.setWetAnodeMass(anodeMass + ACCMass));
       dispatch(
-        stackSlice.setTotalAnodeThickness(anodeThickness + ACCThickness)
+        stackSlice.setWetAnodeMass((anodeMass + ACCMass).toPrecision(3))
+      );
+      dispatch(
+        stackSlice.setTotalAnodeThickness(
+          (anodeThickness + ACCThickness).toPrecision(3)
+        )
       );
     } else if (ActiveElectrode === "anode") {
       var LRCap = LowRateCapacity / Stack.npRatio;
@@ -102,9 +106,13 @@ export function Electrode() {
       );
       console.log(cathodeBMass, cathodeCAMass, cathodeMass);
 
-      dispatch(stackSlice.setWetCathodeMass(cathodeMass + CCCMass));
       dispatch(
-        stackSlice.setTotalCathodeThickness(cathodeThickness + CCCThickness)
+        stackSlice.setWetCathodeMass((cathodeMass + CCCMass).toPrecision(3))
+      );
+      dispatch(
+        stackSlice.setTotalCathodeThickness(
+          (cathodeThickness + CCCThickness).toPrecision(3)
+        )
       );
     }
   }
