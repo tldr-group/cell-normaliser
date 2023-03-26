@@ -9,6 +9,7 @@ import { selectStack } from "../stack/stackSlice";
 export function Visuals() {
   const Stack = useSelector(selectStack);
   const svgSize = 200;
+  const sandwichHeight = 300;
   const center = svgSize / 2;
   const innerRadius = 0;
   const outerRadius = svgSize / 2 + 25;
@@ -179,7 +180,7 @@ export function Visuals() {
     const margin = {
       top: 40,
       right: 40,
-      bottom: 40,
+      bottom: 0,
       left: 40,
     };
 
@@ -188,7 +189,8 @@ export function Visuals() {
 
     data[0].y = 0;
     for (let i = 1; i < data.length; i++) {
-      data[i].y = data[i - 1].y + (data[i - 1].value * svgSize) / yMaxValue;
+      data[i].y =
+        data[i - 1].y + (data[i - 1].value * sandwichHeight) / yMaxValue;
     }
 
     const colorScale = d3
@@ -198,13 +200,13 @@ export function Visuals() {
 
     d3.select(`#${containerId}`)
       .style("width", `${svgSize + margin.right + margin.left}px`)
-      .style("height", `${svgSize + margin.top + margin.bottom}px`);
+      .style("height", `${sandwichHeight + margin.top + margin.bottom}px`);
 
     const svg = d3
       .select(`#${containerId}`)
       .append("svg")
       .attr("width", svgSize + margin.left + margin.right)
-      .attr("height", svgSize + margin.top + margin.bottom);
+      .attr("height", sandwichHeight + margin.top + margin.bottom);
 
     const g = svg.append("g");
 
@@ -232,23 +234,33 @@ export function Visuals() {
         return svgSize;
       })
       .attr("height", function (d) {
-        return (d.value * svgSize) / yMaxValue;
+        return (d.value * sandwichHeight) / yMaxValue;
       });
 
     slice
       .style("fill", (d) => colorScale(d.value))
-      // .style("stroke", "#ffffff")
-      // .style("stroke-width", 2)
+      .style("stroke", "#ffffff")
+      .style("stroke-width", 1)
       .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget).transition().duration(300);
-        // .attr("d", arcHover);
+        d3.select(event.currentTarget)
+          .transition()
+          .duration(300)
+          .attr("width", svgSize - 10)
+          .attr("height", (d.value * sandwichHeight) / yMaxValue - 10)
+          .attr("x", margin.left + 5)
+          .attr("y", d.y + 5);
         tooltip.transition().duration(300).style("opacity", 0.9);
-        tooltip.html(`${d.data.label}: ${d.data.value.toPrecision(3)} mg`);
+        tooltip.html(`${d.label}: ${d.value.toPrecision(3)}µm`);
       })
       .on("mouseout", (event, d) => {
         if (event.target.parentNode !== event.relatedTarget.parentNode) {
-          d3.select(event.currentTarget).transition().duration(300);
-          // .attr("d", arcGeneral);
+          d3.select(event.currentTarget)
+            .transition()
+            .duration(300)
+            .attr("width", svgSize)
+            .attr("height", (d.value * sandwichHeight) / yMaxValue)
+            .attr("x", margin.left)
+            .attr("y", d.y);
           tooltip.transition().duration(300).style("opacity", 0);
         }
       });
@@ -261,7 +273,7 @@ export function Visuals() {
       .style("fill", "#ffffff")
       .style("font-size", "12px")
       .attr("x", margin.left + svgSize / 2)
-      .attr("y", (d) => d.y + (d.value * svgSize) / yMaxValue / 2);
+      .attr("y", (d) => d.y + (d.value * sandwichHeight) / yMaxValue / 2);
   }
 
   return (
