@@ -232,7 +232,7 @@ export function Cell() {
                   <div className='box-row'>
                       <div className='box-12'>
                           <div className={styles.resultTitle}>
-                              Energy density / Wh m-2
+                              Volumetric energy density / Wh l-1
                               </div>
                               <div className={styles.result}>
                               ?
