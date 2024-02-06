@@ -37,7 +37,7 @@ export function WetMassBox(electrode) {
               className={styles.subtitle + " " + styles.clickable}
               onClick={() => dispatch(stackSlice.setWetMassMode("Wet"))}
             >
-              Mass of electrolyte + {electrode} + current collector / g
+              Mass of electrolyte + {electrode} + current collector / mg
             </p>
           </div>
         </div>
@@ -62,7 +62,7 @@ export function WetMassBox(electrode) {
               className={styles.subtitle + " " + styles.clickable}
               onClick={() => dispatch(stackSlice.setWetMassMode("Dry"))}
             >
-              Porosity
+              Porosity / %
             </p>
           </div>
         </div>

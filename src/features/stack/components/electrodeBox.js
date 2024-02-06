@@ -125,7 +125,7 @@ export function ElectrodeBox(props) {
           <div className="box-row">
             <div className="box-8 vertical-center-parent">
               <div className="vertical-center">
-                <p className={styles.subtitle}>Mass of current collector / g</p>
+                <p className={styles.subtitle}>Mass of current collector / mg</p>
               </div>
             </div>
             <div className="box-4 vertical-center-parent">
@@ -146,7 +146,7 @@ export function ElectrodeBox(props) {
             <div className="box-8 vertical-center-parent">
               <div className="vertical-center">
                 <p className={styles.subtitle}>
-                  Mass of {ActiveElectrode} + current collector / g
+                  Mass of {ActiveElectrode} + current collector / mg
                 </p>
               </div>
             </div>

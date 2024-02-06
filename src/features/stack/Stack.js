@@ -28,19 +28,10 @@ export function Stack() {
               </div>
             </div>
             <div className="box-row">
-              <div className="box-12">
-                <div className="box-12">
-                  <p className={styles.title}>Average Voltage / V</p>
-                  <input
-                    className={styles.button}
-                    aria-label="Set avg voltage"
-                    onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
-                    value={String(valueReturn(AverageVoltage))}
-                  ></input>
-                </div>
+
 
                 <div className="box-12">
-                  <p className={styles.title}>Low Rate Capacity / mAh</p>
+                  <p className={styles.title}>Low current capacity / mA h</p>
                   <input
                     className={styles.button}
                     aria-label="Set low rate capacity"
@@ -52,7 +43,16 @@ export function Stack() {
                 </div>
 
                 <div className="box-12">
-                  <p className={styles.title}>Measured Capacity / mAh</p>
+                  <p className={styles.title}>Current of reported capacity / mA</p>
+                  <input
+                    className={styles.button}
+                    aria-label="Set current"
+                    value={"0.1"}
+                  ></input>
+                </div>
+
+                <div className="box-12">
+                  <p className={styles.title}>Reported capacity / mA h</p>
                   <input
                     className={styles.button}
                     aria-label="Set measured capacity"
@@ -60,6 +60,17 @@ export function Stack() {
                       dispatch(setMeasuredCapacity(e.target.value))
                     }
                     value={String(valueReturn(MeasuredCapacity))}
+                  ></input>
+                </div>
+
+                <div className="box-12">
+                <div className="box-12">
+                  <p className={styles.title}>Average voltage for reported capacity / V</p>
+                  <input
+                    className={styles.button}
+                    aria-label="Set avg voltage"
+                    onChange={(e) => dispatch(setAvgVoltage(e.target.value))}
+                    value={String(valueReturn(AverageVoltage))}
                   ></input>
                 </div>
               </div>
